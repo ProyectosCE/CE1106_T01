@@ -1,2 +1,2 @@
 # CE1106_T01
-update
+Tarea 01 Paradigmas de programación
