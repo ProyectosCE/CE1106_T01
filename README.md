@@ -15,17 +15,17 @@
 
 #### Profesor
 
--Marco Rivera Meneses <marivera@itcr.ac.cr>
+- Marco Rivera Meneses <marivera@itcr.ac.cr>
 
 ---
 
 ### Objetivo General
 
--Desarrollar una aplicación que permita reafirmar el conocimiento del lenguaje Ensamblador
+- Desarrollar una aplicación que permita reafirmar el conocimiento del lenguaje Ensamblador
 8086.
 
 #### Objetivos Específicos
 
--Utilizar las instrucciones de impresión en pantalla.
--Utilizar las instrucciones de lectura del teclado.
--Utilizar las operaciones matemáticas básicas.
+- Utilizar las instrucciones de impresión en pantalla.
+- Utilizar las instrucciones de lectura del teclado.
+- Utilizar las operaciones matemáticas básicas.
