@@ -8,10 +8,10 @@
 
 #### Estudiantes
 
--José Bernardo Barquero Bonilla (2023150476)
--Jose Eduardo Campos Salazar ()
--Jimmy Feng Feng (2023060347)
--Alexander Montero Vargas (2023166058)
+- José Bernardo Barquero Bonilla (2023150476)
+- Jose Eduardo Campos Salazar ()
+- Jimmy Feng Feng (2023060347)
+- Alexander Montero Vargas (2023166058)
 
 #### Profesor
 
