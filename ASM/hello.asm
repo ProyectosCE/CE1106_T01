@@ -19,11 +19,11 @@ _start:
 
 ask_case:
     mov eax, 3             ; Número de syscall para sys_write
-    mov ebx, 0                 ; File descriptor 1 (stdout)
-    mov ecx, input_buffer
-    mov edx, 1
-    int 0x80
-    mov al,[input_buffer]
+    mov ebx, 0               ; File descriptor 1 (stdout)
+    mov ecx, input_buffer   ;mueve la direccion del input
+    mov edx, 1              ;longitud de la respuesta
+    int 0x80                
+    mov al,[input_buffer]    ;mueve el contenido a al 
 
     cmp al, 'Y' ;compara la respuesta
     je case_show_figures ;si, si se va a preguntar cual pregunta

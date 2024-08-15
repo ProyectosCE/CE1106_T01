@@ -1,0 +1,9 @@
+\\para compilar el proyecto:
+
+nasm -f elf32 hello.asm -o hello.o
+
+\\para vincular el proyecto:
+ld -m elf_i386 -s -o hello hello.o
+
+
+cuando haga cambios, compilarlo y luego vincularlo, y luego para ejecutarlo solo pone ./hello y lito
