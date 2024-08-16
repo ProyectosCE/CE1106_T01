@@ -1,6 +1,6 @@
 ## USANDO LA EXTENSION PROVISTA EN ESTE REPOSITORIO
 
-ctrl+shift+p: Paradigmas RUN ASM
+ctrl+shift+p: ParadigmasCE BUILD and RUN ASM
 
 
 ## PARA WINDOWS ##
