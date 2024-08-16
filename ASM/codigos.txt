@@ -1,3 +1,21 @@
+## USANDO LA EXTENSION PROVISTA EN ESTE REPOSITORIO
+
+ctrl+shift+p: ParadigmasCE BUILD and RUN ASM
+
+
+## PARA WINDOWS ##
+\\para compilar el exe:
+nasm -f bin -o program.exe program.asm
+
+\\para compilar .com (opcional)
+nasm -f bin -o program.com program.asm
+
+\\para correr el programa 
+
+se hace montando la unidad en DOS-BOX, moviendose a la carpeta y ejecutando:
+program.exe o program.com
+
+## PARA LINUX ##
 \\para compilar el proyecto:
 
 nasm -f elf32 hello.asm -o hello.o
