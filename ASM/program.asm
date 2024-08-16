@@ -1,190 +1,116 @@
+org 100h
 
 section .data
-    default_ms db 'otras cosa',0x0A,0
-    initial_msg db 'Quieres iniciar [Y/N]',0x0A,0  
-    askn_msg db 'Escoge una figura',0x0A,0
-    square db '1.square',0x0A ,0
-    circle db '2.circle',0x0A, 0
-    triangle db '3.trianle',0x0A, 0
-    diamond db '4.diamond',0x0A, 0
-    pentagon db '5.pentagon',0x0A, 0
-    hexagon db '6.hexagon',0x0A, 0
-    trapeze db '7.trapeze',0x0A, 0
-    parallelogram db '8.parallelogram', 0x0A, 0
-    square_msg db 'cuando mide el lado?' , 0x0A, 0
-
-
-
-    
+    default_ms db 'Otras cosas', 0x0D, 0x0A, '$'  ; Mensaje por defecto
+    initial_msg db 'Quieres iniciar [Y/N]', 0x0D, 0x0A, '$'  ; Mensaje inicial que pregunta si se desea iniciar
+    askn_msg db 'Escoge una figura:', 0x0D, 0x0A, '$'  ; Mensaje que pide al usuario que escoja una figura
+    square db '1. Square', 0x0D, 0x0A, '$'  ; Opción para cuadrado
+    circle db '2. Circle', 0x0D, 0x0A, '$'  ; Opción para círculo
+    triangle db '3. Triangle', 0x0D, 0x0A, '$'  ; Opción para triángulo
+    diamond db '4. Diamond', 0x0D, 0x0A, '$'  ; Opción para diamante
+    pentagon db '5. Pentagon', 0x0D, 0x0A, '$'  ; Opción para pentágono
+    hexagon db '6. Hexagon', 0x0D, 0x0A, '$'  ; Opción para hexágono
+    trapeze db '7. Trapeze', 0x0D, 0x0A, '$'  ; Opción para trapecio
+    parallelogram db '8. Parallelogram', 0x0D, 0x0A, '$'  ; Opción para paralelogramo
+    square_msg db 'Cuando mide el lado?', 0x0D, 0x0A, '$'  ; Pregunta para el cuadrado
 
 section .bss
-    input_buffer resb 2  ; Reserva 2 bytes para la primera entrada
-    second_input resb 2 ; Reserva 2 bytes para la segunda entrada, donde decide que figura quiera
-    buffer_lado_square resb 100 ;reserva 100 bytes para la medida de los lados del cuadrado
+    input_buffer resb 2  ; Reserva 2 bytes para la primera entrada del usuario
+    second_input resb 2  ; Reserva 2 bytes para la segunda entrada, donde se elige la figura
+    buffer_lado_square resb 100 ; Reserva 100 bytes para la medida del lado del cuadrado
 
 section .text
-    global _start
-
+    global _start  ; Declaración global del punto de entrada
 
 _start:
-    jmp initial_case ;va a preguntar si quiere calcular algo o no
+    jmp initial_case  ; Salta a la sección que pregunta si desea iniciar
 
+initial_case:
+    ; Imprime el mensaje inicial preguntando si quiere iniciar
+    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
+    lea dx, [initial_msg]  ; Carga la dirección del mensaje inicial en dx
+    int 21h  ; Interrupción de MS-DOS para imprimir cadena
 
+    ; Leer respuesta del usuario (Y/N)
+    mov ah, 01h  ; Función de MS-DOS para leer un solo carácter del teclado
+    int 21h  ; Interrupción de MS-DOS para leer entrada
+    cmp al, 'Y'  ; Compara la entrada con 'Y' (mayúscula)
+    je case_show_figures  ; Si es 'Y', salta a mostrar las figuras
+    cmp al, 'N'  ; Compara la entrada con 'N' (mayúscula)
+    je done  ; Si es 'N', termina el programa
+    jmp default_case  ; Si no es ni 'Y' ni 'N', salta al caso por defecto
 
+case_show_figures:
+    ; Imprime las opciones de figuras disponibles
+    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
+    lea dx, [square]  ; Carga la dirección del mensaje de cuadrado en dx
+    int 21h  ; Interrupción de MS-DOS para imprimir cadena
 
-initial_case: ;caso donde pregunta si desea iniciar
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, initial_msg
-    mov edx, 22               ; Longitud de la entrada a imprimir
-    int 0x80                   ; Llamada al kernel
-    jmp initial_ask_case ; con esta funcion se va a comprar el input del usuario
+    lea dx, [circle]  ; Carga la dirección del mensaje de círculo en dx
+    int 21h  ; Interrupción de MS-DOS para imprimir cadena
 
+    lea dx, [triangle]  ; Carga la dirección del mensaje de triángulo en dx
+    int 21h  ; Interrupción de MS-DOS para imprimir cadena
 
-initial_ask_case:
-    mov eax, 3             ; Número de syscall para sys_write
-    mov ebx, 0               ; File descriptor 1 (stdout)
-    mov ecx, input_buffer   ;mueve la direccion del input
-    mov edx, 2              ;longitud de la respuesta
-    int 0x80                
-    mov al,[input_buffer]    ;mueve el contenido a al 
+    lea dx, [diamond]  ; Carga la dirección del mensaje de diamante en dx
+    int 21h  ; Interrupción de MS-DOS para imprimir cadena
 
-    cmp al, 'Y' ;compara la respuesta
-    je case_show_figures ;si, si se va a preguntar cual pregunta
-    cmp al, 'N' ; compara la respuesta 
-    je done ; ;si, no di ni modo pipipi
-    jmp default_case ;si ninguna, salta a la acepcion 
+    lea dx, [pentagon]  ; Carga la dirección del mensaje de pentágono en dx
+    int 21h  ; Interrupción de MS-DOS para imprimir cadena
 
+    lea dx, [hexagon]  ; Carga la dirección del mensaje de hexágono en dx
+    int 21h  ; Interrupción de MS-DOS para imprimir cadena
 
+    lea dx, [trapeze]  ; Carga la dirección del mensaje de trapecio en dx
+    int 21h  ; Interrupción de MS-DOS para imprimir cadena
 
-case_show_figures
-    ;aqui va a imprimir cuadrado
-    mov eax, 4                 ; Número de syscall para sys_write
-    mov ebx, 1                 ; File descriptor 1 (stdout)
-    mov ecx, square
-    mov edx, 9        ; Longitud de la entrada a imprimir
-    int 0x80                   ; Llamada al kernel
+    lea dx, [parallelogram]  ; Carga la dirección del mensaje de paralelogramo en dx
+    int 21h  ; Interrupción de MS-DOS para imprimir cadena
 
-    ;aqui va a imprimir circulo
-    mov eax, 4                 ; Número de syscall para sys_write
-    mov ebx, 1
-    mov ecx, circle
-    mov edx, 9             ; Longitud de la entrada a imprimir
-    int 0x80                   ; Llamada al kernel
+    ; Pregunta qué figura quiere el usuario
+    lea dx, [askn_msg]  ; Carga la dirección del mensaje que pide seleccionar figura en dx
+    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
+    int 21h  ; Interrupción de MS-DOS para imprimir cadena
 
-    ;aqui va a imprimir triangulo
-    mov eax, 4   
-    mov ebx, 1              ; Número de syscall para sys_write
-    mov ecx, triangle
-    mov edx, 11             ; Longitud de la entrada a imprimir
-    int 0x80                   ; Llamada al kernel
+    ; Leer elección del usuario (1-8)
+    mov ah, 01h  ; Función de MS-DOS para leer un solo carácter del teclado
+    int 21h  ; Interrupción de MS-DOS para leer entrada
+    cmp al, '1'  ; Compara la entrada con '1'
+    je case_square  ; Si es '1', salta al caso del cuadrado
+    cmp al, '2'  ; Compara la entrada con '2'
+    je case_circle  ; Si es '2', salta al caso del círculo
+    jmp done  ; Si no es ninguna de las opciones válidas, termina el programa
 
-    ;aqui va a imprimir diamond
-    mov eax, 4                 ; Número de syscall para sys_write
-    mov ebx, 1
-    mov ecx, diamond
-    mov edx, 10             ; Longitud de la entrada a imprimir
-    int 0x80                   ; Llamada al kernel
-    
-    ;aqui va a imprimir pentagon
-    mov eax, 4                 ; Número de syscall para sys_write
-    mov ebx, 1
-    mov ecx, pentagon
-    mov edx, 11             ; Longitud de la entrada a imprimir
-    int 0x80                   ; Llamada al kernel
+case_square:
+    ; Pregunta sobre el lado del cuadrado
+    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
+    lea dx, [square_msg]  ; Carga la dirección del mensaje de consulta del lado del cuadrado en dx
+    int 21h  ; Interrupción de MS-DOS para imprimir cadena
 
+    ; Leer el lado del cuadrado (suponiendo una entrada numérica)
+    mov ah, 0Ah  ; Función de MS-DOS para leer cadena
+    lea dx, [buffer_lado_square]  ; Carga la dirección del buffer donde se almacenará la entrada del lado del cuadrado
+    int 21h  ; Interrupción de MS-DOS para leer cadena
 
-    ;aqui va a imprimir hexagon
-    mov eax, 4                 ; Número de syscall para sys_write
-    mov ebx, 1
-    mov ecx, hexagon
-    mov edx, 10             ; Longitud de la entrada a imprimir
-    int 0x80                   ; Llamada al kernel
-    
-    ;aqui va a imprimir trapeze
-    mov eax, 4                 ; Número de syscall para sys_write
-    mov ebx, 1
-    mov ecx, trapeze
-    mov edx, 10             ; Longitud de la entrada a imprimir
-    int 0x80                   ; Llamada al kernel
+    ; Aquí podrías hacer cálculos con la entrada obtenida
 
-    ;aqui va a imprimir parallelogram
-    mov eax, 4                 ; Número de syscall para sys_write
-    mov ebx, 1
-    mov ecx, parallelogram
-    mov edx, 16             ; Longitud de la entrada a imprimir
-    int 0x80                   ; Llamada al kernel
-    
-    jmp figure_ask_case ; termina
+    jmp done  ; Salta a terminar el programa
 
-
-figure_ask_case: ;pregunta que figura quiere y espepera un input
-    mov eax, 4                 ; Número de syscall para sys_write
-    mov ebx, 1
-    mov ecx, askn_msg
-    mov edx, 18               ; Longitud de la entrada a imprimir
-    int 0x80                   ; Llamada al kernel
-
-    mov eax, 3             ; Número de syscall para sys_write
-    mov ebx, 0               ; File descriptor 1 (stdout)
-    mov ecx, second_input ;mueve la direccion del input
-    mov edx, 2             ;longitud de la respuesta
-    int 0x80                 ; Llamada al kernel
-
-
-    mov al, [second_input]
-    cmp al, '1'
-    je case_Squre ; si, es un cuadrado
-    cmp al, '2'
-    je case_circle ; si, es un circulo
-    jmp done
-
-
-
-
-
-case_Squre: ;funcion si el input corresponde a un cuadrado
-
-    ;pregunta cuando mide el lado del cuadrado
-    mov eax, 4                 ; Número de syscall para sys_write
-    mov ebx, 1                 ; File descriptor 1 (stdout)
-    mov ecx, square_msg           ; Dirección del buffer
-    mov edx, 21           ; Longitud de la entrada a imprimir
-    int 0x80                 ; Llamada al kernel
-
-    ;aqui va a extraer el input
-
-    mov eax, 3             ; Número de syscall para sys_read
-    mov ebx, 0               ; File descriptor 0 (stdin)
-    mov ecx, buffer_lado_square   ;mueve la direccion del input
-    mov edx, 23             ;longitud de la entrada
-    int 0x80                 ; Llamada al kernel
-
-    jmp done
-    
-
-
-case_circle: ;funcion si el input corresponde a un circulo
-    mov eax, 4                 ; Número de syscall para sys_write
-    mov ebx, 1                 ; File descriptor 1 (stdout)
-    mov ecx, circle           ; Dirección del buffer
-    mov edx, 9             ; Longitud de la entrada a imprimir
-    int 0x80                   ; Llamada al kernel
-
-    mov eax, 1
-    xor ebx, ebx               ; Código de salida 0
-    int 0x80                   ; Llamada al kernel
-    jmp done                    ;termina
+case_circle:
+    ; Imprime mensaje de círculo y sale
+    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
+    lea dx, [circle]  ; Carga la dirección del mensaje de círculo en dx
+    int 21h  ; Interrupción de MS-DOS para imprimir cadena
+    jmp done  ; Salta a terminar el programa
 
 default_case:
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, default_ms
-    mov edx, 9               ; Longitud de la entrada a imprimir
-    int 0x80
-    jmp done
+    ; Mensaje por defecto en caso de entrada inválida
+    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
+    lea dx, [default_ms]  ; Carga la dirección del mensaje por defecto en dx
+    int 21h  ; Interrupción de MS-DOS para imprimir cadena
+    jmp done  ; Salta a terminar el programa
 
 done:
-    mov eax, 1
-    xor ebx, ebx               ; Código de salida 0
-    int 0x80                   ; Llamada al kernel
+    ; Termina el programa y vuelve a MS-DOS
+    mov ah, 4Ch  ; Función de MS-DOS para terminar el programa
+    int 21h  ; Interrupción de MS-DOS para salir
