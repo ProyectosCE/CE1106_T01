@@ -1,18 +1,18 @@
 org 100h
 
 section .data
-    default_ms db 'Otras cosas', 0x0D, 0x0A, '$'  ; Mensaje por defecto
-    initial_msg db 'Quieres iniciar [Y/N]', 0x0D, 0x0A, '$'  ; Mensaje inicial que pregunta si se desea iniciar
-    askn_msg db 'Escoge una figura:', 0x0D, 0x0A, '$'  ; Mensaje que pide al usuario que escoja una figura
-    square db '1. Square', 0x0D, 0x0A, '$'  ; Opción para cuadrado
-    circle db '2. Circle', 0x0D, 0x0A, '$'  ; Opción para círculo
-    triangle db '3. Triangle', 0x0D, 0x0A, '$'  ; Opción para triángulo
-    diamond db '4. Diamond', 0x0D, 0x0A, '$'  ; Opción para diamante
-    pentagon db '5. Pentagon', 0x0D, 0x0A, '$'  ; Opción para pentágono
-    hexagon db '6. Hexagon', 0x0D, 0x0A, '$'  ; Opción para hexágono
-    trapeze db '7. Trapeze', 0x0D, 0x0A, '$'  ; Opción para trapecio
-    parallelogram db '8. Parallelogram', 0x0D, 0x0A, '$'  ; Opción para paralelogramo
-    square_msg db 'Cuando mide el lado?', 0x0D, 0x0A, '$'  ; Pregunta para el cuadrado
+    default_ms db 'Otras cosas', 0x09,'',0x0D, 0x0A, '$'  ; Mensaje por defecto
+    initial_msg db 'Quieres iniciar [Y/N]',0x09,'', 0x0D, 0x0A, '$'  ; Mensaje inicial que pregunta si se desea iniciar
+    askn_msg db 0x0A,'Escoge una figura:',0x09,'', 0x0D, 0x0A, '$'  ; Mensaje que pide al usuario que escoja una figura
+    square db 0x0A,'1. Square',0x09,'', 0x0D, 0x0A, '$'  ; Opción para cuadrado
+    circle db '2. Circle',0x09,'', 0x0D, 0x0A, '$'  ; Opción para círculo
+    triangle db '3. Triangle',0x09,'', 0x0D, 0x0A, '$'  ; Opción para triángulo
+    diamond db '4. Diamond',0x09,'', 0x0D, 0x0A, '$'  ; Opción para diamante
+    pentagon db '5. Pentagon',0x09,'', 0x0D, 0x0A, '$'  ; Opción para pentágono
+    hexagon db '6. Hexagon',0x09,'', 0x0D, 0x0A, '$'  ; Opción para hexágono
+    trapeze db '7. Trapeze',0x09,'', 0x0D, 0x0A, '$'  ; Opción para trapecio
+    parallelogram db '8. Parallelogram',0x09,'', 0x0D, 0x0A, '$'  ; Opción para paralelogramo
+    square_msg db 0x0A,'Cuando mide el lado?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta para el cuadrado
 
 section .bss
     input_buffer resb 2  ; Reserva 2 bytes para la primera entrada del usuario
@@ -88,12 +88,10 @@ case_square:
     int 21h  ; Interrupción de MS-DOS para imprimir cadena
 
     ; Leer el lado del cuadrado (suponiendo una entrada numérica)
-    mov ah, 0Ah  ; Función de MS-DOS para leer cadena
+    mov ah, 01h  ; Función de MS-DOS para leer cadena
     lea dx, [buffer_lado_square]  ; Carga la dirección del buffer donde se almacenará la entrada del lado del cuadrado
     int 21h  ; Interrupción de MS-DOS para leer cadena
-
     ; Aquí podrías hacer cálculos con la entrada obtenida
-
     jmp done  ; Salta a terminar el programa
 
 case_circle:
