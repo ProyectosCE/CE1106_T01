@@ -17,7 +17,8 @@ section .data
 section .bss
     input_buffer resb 2  ; Reserva 2 bytes para la primera entrada del usuario
     second_input resb 2  ; Reserva 2 bytes para la segunda entrada, donde se elige la figura
-    buffer_lado_square resb 100 ; Reserva 100 bytes para la medida del lado del cuadrado
+    buffer_lado_square resb 102 ; maxima entrada del input
+    buffer_lado_square_len resb 0 ;longitud de la entrada
 
 section .text
     global _start  ; Declaración global del punto de entrada
@@ -87,8 +88,13 @@ case_square:
     lea dx, [square_msg]  ; Carga la dirección del mensaje de consulta del lado del cuadrado en dx
     int 21h  ; Interrupción de MS-DOS para imprimir cadena
 
+    ;inicializar el buffer
+    mov byte [buffer_lado_square], 99 ;longitud maxima
+    mov byte [buffer_lado_square+1],0 ;longitud actual 
+
+
     ; Leer el lado del cuadrado (suponiendo una entrada numérica)
-    mov ah, 01h  ; Función de MS-DOS para leer cadena
+    mov ah, 0Ah  ; Función de MS-DOS para leer cadena
     lea dx, [buffer_lado_square]  ; Carga la dirección del buffer donde se almacenará la entrada del lado del cuadrado
     int 21h  ; Interrupción de MS-DOS para leer cadena
     ; Aquí podrías hacer cálculos con la entrada obtenida
@@ -106,7 +112,7 @@ default_case:
     mov ah, 09h  ; Función de MS-DOS para imprimir cadena
     lea dx, [default_ms]  ; Carga la dirección del mensaje por defecto en dx
     int 21h  ; Interrupción de MS-DOS para imprimir cadena
-    jmp done  ; Salta a terminar el programa
+    jmp initial_case  ; Salta a terminar el programa
 
 done:
     ; Termina el programa y vuelve a MS-DOS
