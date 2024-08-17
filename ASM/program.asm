@@ -14,11 +14,21 @@ section .data
     parallelogram db '8. Parallelogram',0x09,'', 0x0D, 0x0A, '$'  ; Opción para paralelogramo
     square_msg db 0x0A,'Cuando mide el lado?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta para el cuadrado
 
+    ;aqui va la cantidad de lados de cada figura lo necesario para calcular el perimetro
+
+    square_sides dw 4
+    triangle_sides dw 3
+    diamond_sides dw 4
+    pentagon_sides dw 5
+    hexagon_sides dw 6
+    
+
+
 section .bss
     input_buffer resb 2  ; Reserva 2 bytes para la primera entrada del usuario
     second_input resb 2  ; Reserva 2 bytes para la segunda entrada, donde se elige la figura
-    buffer_lado_square resb 102 ; maxima entrada del input
-    buffer_lado_square_len resb 0 ;longitud de la entrada
+    buffer_lado_square resb 100 ; maxima entrada del input
+
 
 section .text
     global _start  ; Declaración global del punto de entrada
@@ -87,18 +97,17 @@ case_square:
     mov ah, 09h  ; Función de MS-DOS para imprimir cadena
     lea dx, [square_msg]  ; Carga la dirección del mensaje de consulta del lado del cuadrado en dx
     int 21h  ; Interrupción de MS-DOS para imprimir cadena
-
-    ;inicializar el buffer
-    mov byte [buffer_lado_square], 99 ;longitud maxima
-    mov byte [buffer_lado_square+1],0 ;longitud actual 
-
+    
+    mov byte [buffer_lado_square],100
+    mov byte [buffer_lado_square+1],0
 
     ; Leer el lado del cuadrado (suponiendo una entrada numérica)
     mov ah, 0Ah  ; Función de MS-DOS para leer cadena
     lea dx, [buffer_lado_square]  ; Carga la dirección del buffer donde se almacenará la entrada del lado del cuadrado
     int 21h  ; Interrupción de MS-DOS para leer cadena
-    ; Aquí podrías hacer cálculos con la entrada obtenida
-    jmp done  ; Salta a terminar el programa
+
+    jmp input_to_ax
+
 
 case_circle:
     ; Imprime mensaje de círculo y sale
@@ -118,3 +127,52 @@ done:
     ; Termina el programa y vuelve a MS-DOS
     mov ah, 4Ch  ; Función de MS-DOS para terminar el programa
     int 21h  ; Interrupción de MS-DOS para salir
+
+input_to_ax: ;basicamente vamo a mover la entrada del buffer al registro ax para imprimirlo
+    movzx cx, byte [buffer_lado_square+1] ;aqui va a tomar el bite que contiene el tamaño del input
+    lea si, [buffer_lado_square+2] ;aqui vamos a apuntar al primer caracter del input 
+    xor ax, ax ;limpiamos ax donde vamos almacenar el numero
+    jmp convertir_input
+
+convertir_input: ;aqui vamos a convertir los caracteres
+    movzx dx, byte [si] ;cargamos el contenido al que esta apuntando si
+    sub dx, '0' ; con esto se convierte ASCII a valor numerico
+    mov bx, 10
+    mul bx
+    add ax, dx
+
+    inc si
+    loop convertir_input ;se va a repetir hasta que cx sea del mismo tamaño que el input
+
+    jmp multiplicar_input
+    
+
+multiplicar_input: ;toma el input en el ax y lo multiplica por un numero
+    mov cx, 4 ;multiplica por la cantidad de lados
+    mul cx 
+    
+
+    
+
+
+; conver_ax_para_mostrar ;aqui tomamos el valor de ax ya multiplicado y lo convertimos para ensenar
+;     lea di, [buffer_lado_square+2] ;se apunta a la cadena
+;     mov cx, 10 ;usamos base 10
+;     xor dx,dx ;limpiamos
+
+
+; conversion_loop:
+;     xor dx, dx
+;     div cx ;dividimos ax
+;     add dl, '0'  ; con esto se convierte ASCII a valor numerico
+;     dec di ;se decrementa el puntero
+;     mov [di],dl ;se guarda el caracter
+;     cmp ax, 0
+;     jne conversion_loop
+
+;     mov byte [di-1], '$' ;marca el final de la cadena
+;     mov ah, 09h
+;     lea dx, [di-1]
+;     int 21h
+
+;     jmp done
