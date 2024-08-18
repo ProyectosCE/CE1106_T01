@@ -130,49 +130,51 @@ done:
     int 21h  ; Interrupción de MS-DOS para salir
 
 input_to_ax: ;basicamente vamo a mover la entrada del buffer al registro ax para imprimirlo
-    movzx cx, byte [buffer_lado_square+1] ;aqui va a tomar el bite que contiene el tamaño del input
-    lea si, [buffer_lado_square+2] ;aqui vamos a apuntar al primer caracter del input 
-    xor ax, ax ;limpiamos ax donde vamos almacenar el numero
-    jmp convertir_input
+    xor ax, ax          ; Limpia el registro AX
+    xor si, si          ; Limpia SI
+    xor bx, bx          ; Limpia BX, lo usaremos como acumulador
+    mov cx, [buffer_lado_square+1] ; Carga la longitud de la entrada en CX
 
-convertir_input: ;aqui vamos a convertir los caracteres
-    movzx dx, byte [si] ;cargamos el contenido al que esta apuntando si
-    sub dx, '0' ; con esto se convierte ASCII a valor numerico
-    mov bx, 10 
-    mul bx ;lo hace mas significativo
-    add ax, dx
-    inc si
-    loop convertir_input ;se va a repetir hasta que cx sea del mismo tamaño que el input
-    jmp resultado_msg
+convert_loop:
+    mov dl, [buffer_lado_square+si+2] ; Carga un byte del buffer
+    sub dl, '0'       ; Convierte el carácter a su valor numérico
+    mov ax, bx        ; Copia el acumulador a AX
+    mov bx, 10        ; Multiplica por 10 (base decimal)
+    mul bx            ; AX = AX * 10
+    add ax, dx        ; Suma el valor convertido a AX
+    mov bx, ax        ; Actualiza el acumulador en BX
+    inc si            ; Incrementa SI para la siguiente iteración
+    loop convert_loop ; Repite hasta que CX llegue a 0
+    jmp from_int_to_ascii
 
-calculos: ;AQUI SE SUPONE QUE SE MULTIPLIQUE Y SE CONVIERTA A DB PERO QUE RUDO MAE
+from_int_to_ascii:
+    xor cx,cx
+    xor dx,dx
+    xor bx,bx
 
+    mov bx,10
+    mov dx,ax
 
-    mov bx,10 ;10 porque esa es la base 
-    xor cx,cx ;limpiamos cx
-    xor dx,dx ;limpiamos dx
-    div bx ;dividimos ax en 10 para tomar el mas significativo
-    add dl, '0' ;lo pasamos a ascii
-    push dx ;pusheamos el menos en pila
-    inc cx ;incrmentamos 1 el contado, para saber cuantos hay en pila
-    test ax,0 ;ve si ya es el final
-    jnz calculos ;si no lo vuelve hacer
-    jmp imprimir_digitos
+next_digit:
+    xor dx,dx
+    div bx
+    add dl,'0'
+    push dx
+    inc cx
+    cmp ax,0
+    jne next_digit
+ 
 
-imprimir_digitos: ;este va a imprimir todos los numeros que esten en pila
-    mov ah, 02h 
+print_digitos:
+    mov ah , 02h
     pop dx
     int 21h
-    loop imprimir_digitos
-    jmp done
+    loop print_digitos
 
 
 
-resultado_msg:
-    mov ah,09h
-    lea dx, [result_peri]
-    int 21h
-    jmp calculos
+
+
 
 
 
