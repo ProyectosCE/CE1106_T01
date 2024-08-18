@@ -13,6 +13,7 @@ section .data
     trapeze db '7. Trapeze',0x09,'', 0x0D, 0x0A, '$'  ; Opción para trapecio
     parallelogram db '8. Parallelogram',0x09,'', 0x0D, 0x0A, '$'  ; Opción para paralelogramo
     square_msg db 0x0A,'Cuando mide el lado?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta para el cuadrado
+    result_peri db 0x0A, 'el perimetro es: ',0x09,'', 0x0D, 0x0A, '$' 
 
     ;aqui va la cantidad de lados de cada figura lo necesario para calcular el perimetro
 
@@ -137,42 +138,54 @@ input_to_ax: ;basicamente vamo a mover la entrada del buffer al registro ax para
 convertir_input: ;aqui vamos a convertir los caracteres
     movzx dx, byte [si] ;cargamos el contenido al que esta apuntando si
     sub dx, '0' ; con esto se convierte ASCII a valor numerico
-    mov bx, 10
-    mul bx
+    mov bx, 10 
+    mul bx ;lo hace mas significativo
     add ax, dx
-
     inc si
     loop convertir_input ;se va a repetir hasta que cx sea del mismo tamaño que el input
+    jmp resultado_msg
 
-    jmp multiplicar_input
+calculos: ;AQUI SE SUPONE QUE SE MULTIPLIQUE Y SE CONVIERTA A DB PERO QUE RUDO MAE
+
+
+    mov bx,10 ;10 porque esa es la base 
+    xor cx,cx ;limpiamos cx
+    xor dx,dx ;limpiamos dx
+    div bx ;dividimos ax en 10 para tomar el mas significativo
+    add dl, '0' ;lo pasamos a ascii
+    push dx ;pusheamos el menos en pila
+    inc cx ;incrmentamos 1 el contado, para saber cuantos hay en pila
+    test ax,0 ;ve si ya es el final
+    jnz calculos ;si no lo vuelve hacer
+    jmp imprimir_digitos
+
+imprimir_digitos: ;este va a imprimir todos los numeros que esten en pila
+    mov ah, 02h 
+    pop dx
+    int 21h
+    loop imprimir_digitos
+    jmp done
+
+
+
+resultado_msg:
+    mov ah,09h
+    lea dx, [result_peri]
+    int 21h
+    jmp calculos
+
+
+
+
+
+  
+
     
 
-multiplicar_input: ;toma el input en el ax y lo multiplica por un numero
-    mov cx, 4 ;multiplica por la cantidad de lados
-    mul cx 
+
+
     
 
     
 
 
-; conver_ax_para_mostrar ;aqui tomamos el valor de ax ya multiplicado y lo convertimos para ensenar
-;     lea di, [buffer_lado_square+2] ;se apunta a la cadena
-;     mov cx, 10 ;usamos base 10
-;     xor dx,dx ;limpiamos
-
-
-; conversion_loop:
-;     xor dx, dx
-;     div cx ;dividimos ax
-;     add dl, '0'  ; con esto se convierte ASCII a valor numerico
-;     dec di ;se decrementa el puntero
-;     mov [di],dl ;se guarda el caracter
-;     cmp ax, 0
-;     jne conversion_loop
-
-;     mov byte [di-1], '$' ;marca el final de la cadena
-;     mov ah, 09h
-;     lea dx, [di-1]
-;     int 21h
-
-;     jmp done
