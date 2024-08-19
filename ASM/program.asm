@@ -1,5 +1,4 @@
 org 100h
-
 section .data
     default_ms db 'Otras cosas', 0x09,'',0x0D, 0x0A, '$'  ; Mensaje por defecto
     initial_msg db 'Quieres iniciar [Y/N]',0x09,'', 0x0D, 0x0A, '$'  ; Mensaje inicial que pregunta si se desea iniciar
@@ -106,7 +105,14 @@ case_square:
     mov ah, 0Ah  ; Función de MS-DOS para leer cadena
     lea dx, [buffer_lado_square]  ; Carga la dirección del buffer donde se almacenará la entrada del lado del cuadrado
     int 21h  ; Interrupción de MS-DOS para leer cadena
+    jmp result_msg
 
+
+
+result_msg:
+    mov ah,09h
+    lea dx, [result_peri]
+    int 21h
     jmp input_to_ax
 
 
@@ -129,47 +135,73 @@ done:
     mov ah, 4Ch  ; Función de MS-DOS para terminar el programa
     int 21h  ; Interrupción de MS-DOS para salir
 
-input_to_ax: ;basicamente vamo a mover la entrada del buffer al registro ax para imprimirlo
-    xor ax, ax          ; Limpia el registro AX
-    xor si, si          ; Limpia SI
-    xor bx, bx          ; Limpia BX, lo usaremos como acumulador
-    mov cx, [buffer_lado_square+1] ; Carga la longitud de la entrada en CX
 
-convert_loop:
-    mov dl, [buffer_lado_square+si+2] ; Carga un byte del buffer
-    sub dl, '0'       ; Convierte el carácter a su valor numérico
-    mov ax, bx        ; Copia el acumulador a AX
-    mov bx, 10        ; Multiplica por 10 (base decimal)
-    mul bx            ; AX = AX * 10
-    add ax, dx        ; Suma el valor convertido a AX
-    mov bx, ax        ; Actualiza el acumulador en BX
-    inc si            ; Incrementa SI para la siguiente iteración
-    loop convert_loop ; Repite hasta que CX llegue a 0
-    jmp from_int_to_ascii
-
-from_int_to_ascii:
+input_to_ax:
+    xor ax, ax
+    xor bx, bx    
     xor cx,cx
-    xor dx,dx
-    xor bx,bx
+    mov cl, [buffer_lado_square+1]
+    lea si, [buffer_lado_square+2]  ; Mueve fuera del bucle
+    jmp loop_convertidor
 
-    mov bx,10
-    mov dx,ax
+loop_convertidor:
+    mov dx, 0                       ; Asegura que DX esté en 0
+    mov dl, [si]                    ; Lee el valor en DL
+    sub dx, '0'                     ; Convierte de ASCII a valor numérico
+    mov bx, 10                      ; Preparación para multiplicación por 10 
+    add ax, dx
+    cmp cx, 1
+    je  calculos                    ; Añade el dígito convertido al acumulador  
+    mul bx                          ; Multiplica AX por 10 (AX = AX * 10)
+   
+    inc si
+                              ; Mueve al siguiente carácte
+    loop loop_convertidor
+    jmp calculos
 
-next_digit:
+calculos:
+    mov bx,4
+    mul bx
+    xor cx, cx
+    xor dx, dx
+    jmp from_ax_db
+
+from_ax_db:
     xor dx,dx
+    mov bx, 10
     div bx
-    add dl,'0'
+    add dx, '0'
     push dx
     inc cx
-    cmp ax,0
-    jne next_digit
- 
+    cmp ax, 0
+    jne from_ax_db
+    jmp imprimir_digitos
 
-print_digitos:
-    mov ah , 02h
+imprimir_digitos:
+    mov ah, 02h
     pop dx
     int 21h
-    loop print_digitos
+    loop imprimir_digitos
+    jmp done
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
