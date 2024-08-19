@@ -5,6 +5,7 @@
 *.exe
 *.o
 *.obj
+*.com
 *.bc
 
 ### VisualStudioCode ###
@@ -24,3 +25,4 @@
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore
+!DEBUG.COM
