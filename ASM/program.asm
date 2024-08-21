@@ -173,8 +173,8 @@ loop_convertidor:
     add ax, dx
     cmp cx, 1
     je  calculos                    ; Añade el dígito convertido al acumulador  
-    cmp aH,10
-    jg over_flow_case
+    cmp cx,3
+    je over_flow_case
     mul bx                          ; Multiplica AX por 10 (AX = AX * 10)
     inc si                     ; Mueve al siguiente carácte
     loop loop_convertidor  
@@ -182,14 +182,10 @@ loop_convertidor:
    
 
 over_flow_case:                                                           
-
     mov [buffer_para_entero],ax 
-    inc si
     xor ax,ax
-    add ax,dx
+    inc si 
     dec cx
-    mov bx, 10
-    mul bx
     jmp loop_conver_pof
     
 loop_conver_pof: ;este se usa para continuar con el numero despues del overflow
@@ -202,23 +198,30 @@ loop_conver_pof: ;este se usa para continuar con el numero despues del overflow
     je  mov_dec                    ; Añade el dígito convertido al acumulador  
     mul bx                          ; Multiplica AX por 10 (AX = AX * 10)
     inc si                     ; Mueve al siguiente carácte
-    loop loop_convertidor  
+    loop loop_conver_pof 
     jmp mov_dec
-        
+          
 mov_dec: ;mueve decimales al buffer correspondinete
-    mov [buffer_peque], ax
-    xor ax,ax
-    mov ax, [buffer_para_entero]
+    mov [buffer_para_entero+3], ax
     jmp calculos
     
 
-calculos: 
-    mov bx,4
+calculos:
+    mov bx, 4
     mul bx
-    xor cx, cx
-    xor dx, dx
+    mov bx,100
+    div bx
+    mov [buffer_para_entero+4],dx
+    mov [buffer_peque],ax
+    mov ax, [buffer_para_entero]
     
+    mov bx, 4
+    mul bx
+    add ax,[buffer_peque]
+    mov [buffer_para_entero],ax
+    mov ax, [buffer_para_entero+4]
     jmp from_ax_db
+    
 
 from_ax_db:
     xor dx,dx
@@ -229,7 +232,26 @@ from_ax_db:
     inc cx
     cmp ax, 0
     jne from_ax_db
+    jmp clean_to_dec 
+    
+clean_to_dec:
+    push 46
+    xor ax,ax
+    mov ax, [buffer_para_entero]
+    jmp from_ax_db_dec
+
+from_ax_db_dec:
+    xor dx,dx
+    mov bx, 10
+    div bx
+    add dx, '0'
+    push dx
+    inc cx
+    cmp ax, 0
+    jne from_ax_db_dec
     jmp imprimir_digitos
+
+   
 
 imprimir_digitos:
     mov ah, 02h
