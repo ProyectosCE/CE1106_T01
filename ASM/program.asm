@@ -129,20 +129,39 @@ default_case:
     lea dx, [default_ms]  ; Carga la dirección del mensaje por defecto en dx
     int 21h  ; Interrupción de MS-DOS para imprimir cadena
     jmp initial_case  ; Salta a terminar el programa
-
 done:
     ; Termina el programa y vuelve a MS-DOS
     mov ah, 4Ch  ; Función de MS-DOS para terminar el programa
     int 21h  ; Interrupción de MS-DOS para salir
 
-
-input_to_ax:
+input_to_ax: ;este paso es para un ciclo 
+    xor ax, ax
+    xor bx, bx    
+    xor cx,cx
+    mov cl, [buffer_lado_square+1]
+    lea si, [buffer_lado_square+2]  ; Mueve fuera del bucle 
+    call restricciones
     xor ax, ax
     xor bx, bx    
     xor cx,cx
     mov cl, [buffer_lado_square+1]
     lea si, [buffer_lado_square+2]  ; Mueve fuera del bucle
     jmp loop_convertidor
+    
+    
+restricciones: ;verifica que la entrda solo sean numeros:
+    mov dx, 0                       ; Asegura que DX esté en 0
+    mov dl, [si]                    ; Lee el valor en DL
+    sub dx, '0'
+    cmp dl,9
+    jg initial_case
+    cmp dl,0
+    jl initial_case                     ; Convierte de ASCII a valor numérico                      ; Preparación para multiplicación por 10 
+    cmp cx, 1                    ; Añade el dígito convertido al acumulador                           ; Multiplica AX por 10 (AX = AX * 10)
+    inc si                     ; Mueve al siguiente carácte
+    loop restricciones
+    ret 
+    
 
 loop_convertidor:
     mov dx, 0                       ; Asegura que DX esté en 0
@@ -152,18 +171,51 @@ loop_convertidor:
     add ax, dx
     cmp cx, 1
     je  calculos                    ; Añade el dígito convertido al acumulador  
+    cmp aH,10
+    jg over_flow_case
     mul bx                          ; Multiplica AX por 10 (AX = AX * 10)
-   
-    inc si
-                              ; Mueve al siguiente carácte
-    loop loop_convertidor
+    inc si                     ; Mueve al siguiente carácte
+    loop loop_convertidor  
     jmp calculos
+   
 
-calculos:
+over_flow_case:                                                           
+
+    mov [buffer_para_entero],ax 
+    inc si
+    xor ax,ax
+    add ax,dx
+    dec cx
+    mov bx, 10
+    mul bx
+    jmp loop_conver_pof
+    
+loop_conver_pof: ;este se usa para continuar con el numero despues del overflow
+    mov dx, 0                       ; Asegura que DX esté en 0
+    mov dl, [si]                    ; Lee el valor en DL
+    sub dx, '0'                     ; Convierte de ASCII a valor numérico
+    mov bx, 10                      ; Preparación para multiplicación por 10 
+    add ax, dx
+    cmp cx, 1
+    je  mov_dec                    ; Añade el dígito convertido al acumulador  
+    mul bx                          ; Multiplica AX por 10 (AX = AX * 10)
+    inc si                     ; Mueve al siguiente carácte
+    loop loop_convertidor  
+    jmp mov_dec
+        
+mov_dec: ;mueve decimales al buffer correspondinete
+    mov [buffer_peque], ax
+    xor ax,ax
+    mov ax, [buffer_para_entero]
+    jmp calculos
+    
+
+calculos: 
     mov bx,4
     mul bx
     xor cx, cx
     xor dx, dx
+    
     jmp from_ax_db
 
 from_ax_db:
