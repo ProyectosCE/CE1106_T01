@@ -28,6 +28,8 @@ section .bss
     input_buffer resb 2  ; Reserva 2 bytes para la primera entrada del usuario
     second_input resb 2  ; Reserva 2 bytes para la segunda entrada, donde se elige la figura
     buffer_lado_square resb 100 ; maxima entrada del input
+    buffer_para_entero resb 8
+    buffer_peque resb 2
 
 
 section .text
