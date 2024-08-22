@@ -142,7 +142,7 @@ input_to_ax: ;este paso es para un ciclo
     xor cx,cx
     mov cl, [buffer_lado_square+1]
     lea si, [buffer_lado_square+2]  ; Mueve fuera del bucle 
-    call restricciones
+    ;call restricciones
     xor ax, ax
     xor bx, bx    
     xor cx,cx
@@ -166,45 +166,22 @@ restricciones: ;verifica que la entrda solo sean numeros:
     
 
 loop_convertidor:
-    mov dx, 0                       ; Asegura que DX esté en 0
-    mov dl, [si]                    ; Lee el valor en DL
+    mov dx, 0                       ; Asegura que DX esté en 
+    mov dl, [si]
+    cmp dl, 46
+    je separacion                    ; Lee el valor en DL
     sub dx, '0'                     ; Convierte de ASCII a valor numérico
     mov bx, 10                      ; Preparación para multiplicación por 10 
     add ax, dx
     cmp cx, 1
-    je  calculos                    ; Añade el dígito convertido al acumulador  
-    cmp cx,3
-    je over_flow_case
-    mul bx                          ; Multiplica AX por 10 (AX = AX * 10)
-    inc si                     ; Mueve al siguiente carácte
-    loop loop_convertidor  
-    jmp calculos
-   
-
-over_flow_case:                                                           
-    mov [buffer_para_entero],ax 
-    xor ax,ax
-    inc si 
-    dec cx
-    jmp loop_conver_pof
-    
-loop_conver_pof: ;este se usa para continuar con el numero despues del overflow
-    mov dx, 0                       ; Asegura que DX esté en 0
-    mov dl, [si]                    ; Lee el valor en DL
-    sub dx, '0'                     ; Convierte de ASCII a valor numérico
-    mov bx, 10                      ; Preparación para multiplicación por 10 
-    add ax, dx
-    cmp cx, 1
-    je  mov_dec                    ; Añade el dígito convertido al acumulador  
-    mul bx                          ; Multiplica AX por 10 (AX = AX * 10)
-    inc si                     ; Mueve al siguiente carácte
-    loop loop_conver_pof 
-    jmp mov_dec
-          
-mov_dec: ;mueve decimales al buffer correspondinete
-    mov [buffer_para_entero+3], ax
-    jmp calculos
-    
+    je  calculos
+    inc si
+    mov dl, [si]
+    cmp dl, 46
+    je separacion                    ; Añade el dígito convertido al acumulador  
+    mul bx                          ; Multiplica AX por 10 (AX = AX * 10)                    ; Mueve al siguiente carácte
+    loop loop_convertidor 
+    jmp calculos    
 
 calculos:
     mov bx, 4
@@ -214,14 +191,22 @@ calculos:
     mov [buffer_para_entero+4],dx
     mov [buffer_peque],ax
     mov ax, [buffer_para_entero]
-    
     mov bx, 4
     mul bx
-    add ax,[buffer_peque]
+    add ax, [buffer_peque]
     mov [buffer_para_entero],ax
     mov ax, [buffer_para_entero+4]
     jmp from_ax_db
-    
+  
+separacion:
+    inc si
+    dec cx
+    dec cx
+    mov [buffer_para_entero], ax
+    xor ax, ax
+    xor dx,dx
+    jmp loop_convertidor 
+
 
 from_ax_db:
     xor dx,dx
