@@ -174,14 +174,15 @@ loop_convertidor:
     mov bx, 10                      ; Preparación para multiplicación por 10 
     add ax, dx
     cmp cx, 1
-    je  calculos
+    je  calculo_area
     inc si
     mov dl, [si]
-    cmp dl, 46
+    cmp dl,46
     je separacion                    ; Añade el dígito convertido al acumulador  
-    mul bx                          ; Multiplica AX por 10 (AX = AX * 10)                    ; Mueve al siguiente carácte
+    mul bx                          ; Multiplica AX por 10 (AX = AX * 10)
+                         ; Mueve al siguiente carácte
     loop loop_convertidor 
-    jmp calculos    
+    jmp calculo_area   
 
 calculos:
     mov bx, 4
@@ -197,7 +198,28 @@ calculos:
     mov [buffer_para_entero],ax
     mov ax, [buffer_para_entero+4]
     jmp from_ax_db
-  
+           
+           
+calculo_area: ;dice area pero es para sumas entre entradas
+    xor bx, bx
+    xor cx,cx
+    xor dx,dx
+
+    mov bx, ax
+    add ax, bx
+    mov bx,100
+    div bx
+    mov [buffer_para_entero+4],dx
+    mov [buffer_peque],ax
+    mov ax, [buffer_para_entero]
+    mov bx, [buffer_para_entero]
+    add ax, bx
+    add ax, [buffer_peque]
+    mov [buffer_para_entero],ax
+    mov ax, [buffer_para_entero+4]
+    jmp from_ax_db           
+           
+ 
 separacion:
     inc si
     dec cx
