@@ -222,6 +222,8 @@ perimetro:
     add BYTE [peri_r+2],al
     ADC BYTE [peri_r+1],ah
     ADC BYTE [peri_r],dl
+    ;VERIFICADO
+
     ;parte entera del input por parte decimal de lados
     ;pop BX aqui
     mov ax,[dato_01]
@@ -231,41 +233,68 @@ perimetro:
     mov cx,100
     div cx
     ;guardar resultado
-    add BYTE [peri_r+3],dl
-    adc BYTE [peri_r+2],al
-    adc byte [peri_r+1],ah
-    adc byte [peri_r+1],0
+    add byte [peri_r+3],dl
+    PUSH AX
+    XOR AX,AX
+    mov al,[peri_r+3]
+    div Cl
+    MOV byte [peri_r+3],ah
+    mov ch,al
+    POP AX
+    add al,ch
+    ADD BYTE [peri_r+2],al
+    adc ah,0
+    add byte [peri_r+1],ah
+    adc byte [peri_r],0
+    ;VERIFICADO
+    
     
     ;parte decimal del input parte entera de lados
     mov al,[dato_01+2]
     xor bx,bx
+    MOV AH,0
     mov bl,[lados]
     mul bl
-    mov cl,100
-    div cl
-    add [peri_r+3],ah
-    adc BYTE [peri_r+2],AL
-    ADC BYTE [peri_r+1],0
+    mov cx,100
+    div Cl
+    add BYTE [peri_r+3],ah
+    PUSH AX
+    XOR AX,AX
+    mov al,[peri_r+3]
+    div CL
+    mov byte [peri_r+3],ah
+    mov ch,al
+    POP AX
+    add al,ch
+    MOV CH,0
+    add BYTE [peri_r+2],AL
+    adc CH,0
+    ADD BYTE [peri_r+1],ch
     adc byte [peri_r],0
-
+    ;VERIFICADO
+    
+    
     ;para ambos decimales
     mov al,[dato_01+2]
     xor bx,bx
+    MOV AH,0
     mov bl,[lados+1]
     mul bl
-    mov cl,100
+    mov cx,100
     div cl
     ;guardar resultado
     add BYTE [peri_r+3],al
-    adc BYTE [peri_r+2],0
-    adc BYTE [peri_r+1],0
-    adc byte [peri_r],0
-    ;DEBUG
-    MOV AH,[peri_r]
-    MOV AL,[peri_r+1]
-    MOV BH,[peri_r+2]
-    MOV BL,[peri_r+3]
+    XOR AX,AX
+    mov al,[peri_r+3]
+    div cL
+    mov byte [peri_r+3],ah
     INT 3
+    MOV AH,0
+    add BYTE [peri_r+2],AL
+    ADC ah,0
+    ADD BYTE [peri_r+1],ah
+    adc byte [peri_r],0
+    ;VERIFICADO
     ;retorna
     ret
 
