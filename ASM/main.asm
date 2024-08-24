@@ -45,7 +45,7 @@ section .bss
 
     lados resb 2
 
-    perimetro_r resb 4 ;para cualquier figura maximo FFFF FFFF
+    peri_r resb 4 ;para cualquier figura maximo FFFF FFFF
     area_r resb 7 ;para cualquier valor, maximo el circulo 0F FFFF FFFF FFFF
     
 section .text
@@ -129,8 +129,8 @@ case_square:
     mov byte [lados],6
     mov byte [lados+1],28
     call perimetro
-    mov ax,[perimetro_r]
-    mov bx,[perimetro_r+2]
+    ;mov ax,[perimetro_r]
+    ;mov bx,[perimetro_r+2]
     int 3
     
     
@@ -219,9 +219,9 @@ perimetro:
     mov bl, [lados]
     mul bx
     ;guardar resultado
-    INT 3
-    add [perimetro_r],dl
-    add [perimetro_r+1],ax
+    add BYTE [peri_r+2],al
+    ADC BYTE [peri_r+1],ah
+    ADC BYTE [peri_r],dl
     ;parte entera del input por parte decimal de lados
     ;pop BX aqui
     mov ax,[dato_01]
@@ -231,10 +231,11 @@ perimetro:
     mov cx,100
     div cx
     ;guardar resultado
-    INT 3
-    add [perimetro_r+3],dl
-    adc word [perimetro_r+1],0
-    adc byte [perimetro],0
+    add BYTE [peri_r+3],dl
+    adc BYTE [peri_r+2],al
+    adc byte [peri_r+1],ah
+    adc byte [peri_r+1],0
+    
     ;parte decimal del input parte entera de lados
     mov al,[dato_01+2]
     xor bx,bx
@@ -242,14 +243,11 @@ perimetro:
     mul bl
     mov cl,100
     div cl
-    XOR BX,BX
-    MOV bl,al
-    add [perimetro_r+3],ah
-    ;guardar resultado
-    int 3
-    adc word [perimetro_r+1],0x0000
-    add word [perimetro_r+1],bx
-    adc byte [perimetro],0
+    add [peri_r+3],ah
+    adc BYTE [peri_r+2],AL
+    ADC BYTE [peri_r+1],0
+    adc byte [peri_r],0
+
     ;para ambos decimales
     mov al,[dato_01+2]
     xor bx,bx
@@ -258,10 +256,16 @@ perimetro:
     mov cl,100
     div cl
     ;guardar resultado
+    add BYTE [peri_r+3],al
+    adc BYTE [peri_r+2],0
+    adc BYTE [peri_r+1],0
+    adc byte [peri_r],0
+    ;DEBUG
+    MOV AH,[peri_r]
+    MOV AL,[peri_r+1]
+    MOV BH,[peri_r+2]
+    MOV BL,[peri_r+3]
     INT 3
-    add [perimetro_r+3],al
-    adc word [perimetro_r+1],0
-    adc byte [perimetro],0
     ;retorna
     ret
 
