@@ -167,11 +167,11 @@ add_digit_entero:
     PUSH CX
     PUSH DX
     mov CX, 10
-    mov AX, [dato_01]
+    mov AX, [bx]
     mul CX
     POP DX
     add ax,dx
-    mov [dato_01], AX
+    mov [bx], AX
     POP CX
     ret
 
