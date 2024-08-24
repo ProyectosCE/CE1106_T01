@@ -126,9 +126,7 @@ case_square:
     mov ch,0
     mov bx, [dato_lista]
     call procesar_entero
-    mov ax,[dato_01]
-    mov ch,[dato_01+2]
-    INT 3
+    
 
 lectura: ;lee cualquier entrada segun se requiera en el buffer_text de máximo 8 caracteres (7 de entrada y el enter)
     mov byte [buffer_text],8
