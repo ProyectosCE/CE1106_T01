@@ -207,7 +207,8 @@ error:
 ;calculo de perimetro
 perimetro:
     ;partes enteras
-    mov ax,[dato_01]
+    mov ax,[dato_01] ;cambiar para usar con BX buffer dinamico para que la formula sea universal
+    ;implementar uso de pila, push BX aqui
     xor bx,bx
     mov bl, [lados]
     mul bx
@@ -215,6 +216,7 @@ perimetro:
     mov [perimetro_r],dl
     mov [perimetro_r+1],ax
     ;parte entera del input por parte decimal de lados
+    ;pop BX aqui
     mov ax,[dato_01]
     xor bx,bx
     mov bl, [lados+1]
@@ -222,7 +224,7 @@ perimetro:
     mov cx,100
     div cx
     add [perimetro_r+3],dl
-    adc byte [perimetro_r+1],0
+    adc word [perimetro_r+1],0
     adc byte [perimetro],0
     ;parte decimal del input parte entera de lados
 
