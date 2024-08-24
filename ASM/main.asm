@@ -220,41 +220,6 @@ done:
     mov ah, 4Ch  ; Función de MS-DOS para terminar el programa
     int 21h  ; Interrupción de MS-DOS para salir
 
-input_to_ax: ;basicamente vamo a mover la entrada del buffer al registro ax para imprimirlo
-    xor ax, ax          ; Limpia el registro AX
-    xor si, si          ; Limpia SI
-    xor bx, bx          ; Limpia BX, lo usaremos como acumulador
-    mov cx, [buffer_lado_square+1] ; Carga la longitud de la entrada en CX
-
-convert_loop:
-    mov dl, [buffer_lado_square+si+2] ; Carga un byte del buffer
-    sub dl, '0'       ; Convierte el carácter a su valor numérico
-    mov ax, bx        ; Copia el acumulador a AX
-    mov bx, 10        ; Multiplica por 10 (base decimal)
-    mul bx            ; AX = AX * 10
-    add ax, dx        ; Suma el valor convertido a AX
-    mov bx, ax        ; Actualiza el acumulador en BX
-    inc si            ; Incrementa SI para la siguiente iteración
-    loop convert_loop ; Repite hasta que CX llegue a 0
-    jmp from_int_to_ascii
-
-from_int_to_ascii:
-    xor cx,cx
-    xor dx,dx
-    xor bx,bx
-
-    mov bx,10
-    mov dx,ax
-
-next_digit:
-    xor dx,dx
-    div bx
-    add dl,'0'
-    push dx
-    inc cx
-    cmp ax,0
-    jne next_digit
- 
 
 print_digitos:
     mov ah , 02h
