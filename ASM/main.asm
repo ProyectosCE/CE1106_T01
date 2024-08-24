@@ -141,7 +141,7 @@ procesar_entero:
     mov ax,0
     call check_digit
     inc si
-    cmp al,'?'
+    cmp dl,'.'
     je fin_procesar_entero
     sub dl, '0'
     call add_digit_entero
@@ -196,7 +196,6 @@ check_digit:
 check_point:
     cmp dl, '.'             ; Comparar con el carácter punto '.'
     jne error                ; Si no es un punto, es un error
-    mov al,'?'
     ret                      ; Retornar de la subrutina
 
 error:
