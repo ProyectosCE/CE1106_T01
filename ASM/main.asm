@@ -223,7 +223,8 @@ perimetro:
     mul bx
     ;guardar resultado
     add BYTE [peri_r+2],al
-    ADC BYTE [peri_r+1],ah
+    adc ah,0
+    ADD BYTE [peri_r+1],ah
     ADC BYTE [peri_r],dl
     ;VERIFICADO
 
