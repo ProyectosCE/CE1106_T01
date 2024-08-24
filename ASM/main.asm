@@ -43,10 +43,10 @@ section .bss
     dato_03 resb 3 ;dato Numerico para input 3
     dato_lista resw 3  ;buffer lista de las direcciones de los buffer de datos
 
-    buffer_lado_square resb 1
+    lados resb 2
 
-    perimetro resb 4 ;para cualquier figura maximo FFFF FFFF
-    area resb 7 ;para cualquier valor, maximo el circulo 0F FFFF FFFF FFFF
+    perimetro_r resb 4 ;para cualquier figura maximo FFFF FFFF
+    area_r resb 7 ;para cualquier valor, maximo el circulo 0F FFFF FFFF FFFF
     
 section .text
     global _start  ; Declaración global del punto de entrada
@@ -127,6 +127,7 @@ case_square:
     mov bx, [dato_lista]
     call procesar_entero
     
+    
 
 lectura: ;lee cualquier entrada segun se requiera en el buffer_text de máximo 8 caracteres (7 de entrada y el enter)
     mov byte [buffer_text],8
@@ -171,6 +172,8 @@ add_digit_entero:
     mul CX
     POP DX
     add ax,dx
+    cmp ax,9999
+    ja error
     mov [bx], AX
     POP CX
     ret
@@ -197,9 +200,34 @@ check_point:
     cmp dl, '.'             ; Comparar con el carácter punto '.'
     jne error                ; Si no es un punto, es un error
     ret                      ; Retornar de la subrutina
-
+       ; Llamar a la rutina de manejo de errores
 error:
     JMP done 
+
+;calculo de perimetro
+perimetro:
+    ;partes enteras
+    mov ax,[dato_01]
+    xor bx,bx
+    mov bl, [lados]
+    mul bx
+    ;guardar resultado
+    mov [perimetro_r],dl
+    mov [perimetro_r+1],ax
+    ;parte entera del input por parte decimal de lados
+    mov ax,[dato_01]
+    xor bx,bx
+    mov bl, [lados+1]
+    mul bx
+    mov cx,100
+    div cx
+    add [perimetro_r+3],dl
+    adc byte [perimetro_r+1],0
+    adc byte [perimetro],0
+    ;parte decimal del input parte entera de lados
+
+
+
 case_circle:
     ; Imprime mensaje de círculo y sale
     mov ah, 09h  ; Función de MS-DOS para imprimir cadena
@@ -217,6 +245,7 @@ default_case:
 done:
     ; Termina el programa y vuelve a MS-DOS
     mov ah, 4Ch  ; Función de MS-DOS para terminar el programa
+    INT 3
     int 21h  ; Interrupción de MS-DOS para salir
 
 
