@@ -227,8 +227,26 @@ perimetro:
     adc word [perimetro_r+1],0
     adc byte [perimetro],0
     ;parte decimal del input parte entera de lados
-
-
+    mov al,[dato_01+2]
+    xor bx,bx
+    mov bl,[lados]
+    mul bl
+    mov cl,100
+    div cl
+    add [perimetro_r+3],ah
+    adc word [perimetro_r+1],0
+    add word [perimetro_r+1],al
+    adc byte [perimetro],0
+    ;para ambos decimales
+    mov al,[dato_01+2]
+    xor bx,bx
+    mov bl,[lados+1]
+    mul bl
+    mov cl,100
+    div cl
+    add [perimetro_r+3],al
+    adc word [perimetro_r+1],0
+    adc byte [perimetro],0
 
 case_circle:
     ; Imprime mensaje de círculo y sale
