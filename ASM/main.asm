@@ -126,6 +126,12 @@ case_square:
     mov ch,0
     mov bx, [dato_lista]
     call procesar_entero
+    mov byte [lados],6
+    mov byte [lados+1],28
+    call perimetro
+    mov ax,[perimetro_r]
+    mov bx,[perimetro_r+2]
+    int 3
     
     
 
@@ -213,8 +219,9 @@ perimetro:
     mov bl, [lados]
     mul bx
     ;guardar resultado
-    mov [perimetro_r],dl
-    mov [perimetro_r+1],ax
+    INT 3
+    add [perimetro_r],dl
+    add [perimetro_r+1],ax
     ;parte entera del input por parte decimal de lados
     ;pop BX aqui
     mov ax,[dato_01]
@@ -223,6 +230,8 @@ perimetro:
     mul bx
     mov cx,100
     div cx
+    ;guardar resultado
+    INT 3
     add [perimetro_r+3],dl
     adc word [perimetro_r+1],0
     adc byte [perimetro],0
@@ -233,9 +242,13 @@ perimetro:
     mul bl
     mov cl,100
     div cl
+    XOR BX,BX
+    MOV bl,al
     add [perimetro_r+3],ah
-    adc word [perimetro_r+1],0
-    add word [perimetro_r+1],al
+    ;guardar resultado
+    int 3
+    adc word [perimetro_r+1],0x0000
+    add word [perimetro_r+1],bx
     adc byte [perimetro],0
     ;para ambos decimales
     mov al,[dato_01+2]
@@ -244,9 +257,13 @@ perimetro:
     mul bl
     mov cl,100
     div cl
+    ;guardar resultado
+    INT 3
     add [perimetro_r+3],al
     adc word [perimetro_r+1],0
     adc byte [perimetro],0
+    ;retorna
+    ret
 
 case_circle:
     ; Imprime mensaje de círculo y sale
