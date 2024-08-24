@@ -126,12 +126,15 @@ case_square:
     mov ch,0
     mov bx, [dato_lista]
     call procesar_entero
-    mov byte [lados],6
-    mov byte [lados+1],28
+    mov byte [lados],4
+    mov byte [lados+1],00
     call perimetro
-    ;mov ax,[perimetro_r]
-    ;mov bx,[perimetro_r+2]
-    int 3
+    ;DEBUG
+    MOV AH,[peri_r]
+    MOV AL,[peri_r+1]
+    MOV BH,[peri_r+2]
+    MOV BL,[peri_r+3]
+    INT 3
     
     
 
@@ -288,7 +291,6 @@ perimetro:
     mov al,[peri_r+3]
     div cL
     mov byte [peri_r+3],ah
-    INT 3
     MOV AH,0
     add BYTE [peri_r+2],AL
     ADC ah,0
