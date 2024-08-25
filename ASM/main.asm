@@ -128,179 +128,14 @@ case_square:
     call procesar_entero
     mov byte [lados],4
     mov byte [lados+1],00
-    call perimetro
+    call multiplicacion
     ;DEBUG
     MOV AH,[peri_r]
     MOV AL,[peri_r+1]
     MOV BH,[peri_r+2]
     MOV BL,[peri_r+3]
     INT 3
-    
-    
-
-lectura: ;lee cualquier entrada segun se requiera en el buffer_text de máximo 8 caracteres (7 de entrada y el enter)
-    mov byte [buffer_text],8
-    mov ah, 0Ah
-    lea dx,[buffer_text]
-    int 21h
-    ret
-
-procesar_entero:
-    mov dx,0
-    mov dl, [buffer_text+si+2]
-    mov ax,0
-    call check_digit
-    inc si
-    cmp dl,'.'
-    je fin_procesar_entero
-    sub dl, '0'
-    call add_digit_entero
-    loop procesar_entero
-    ret
-
-procesar_decimal:
-    mov dl, [buffer_text+si+2]
-    call check_digit
-    sub dl, '0'
-    inc si
-    call add_digit_decimal
-    loop procesar_decimal
-    ret
-
-fin_procesar_entero:
-    dec cx
-    call procesar_decimal
-    ret
-
-add_digit_entero:
-    ; Multiplicar bufnum por 10 usando bucle
-    PUSH CX
-    PUSH DX
-    mov CX, 10
-    mov AX, [bx]
-    mul CX
-    POP DX
-    add ax,dx
-    cmp ax,9999
-    ja error
-    mov [bx], AX
-    POP CX
-    ret
-
-add_digit_decimal:
-    ; Multiplicar bufnum por 10 usando bucle
-    PUSH CX
-    mov CL, 10
-    mov al, [bx+2]
-    mul cl
-    add al,dl
-    mov [bx+2], al
-    POP CX
-    ret
-; Subrutina check_digit
-check_digit:
-    cmp dl, '0'             ; Comparar DL con 0 (ya que restaste '0')
-    jb check_point                  ; Si es menor que 0, es un error (no es un número)
-    cmp dl, '9'                ; Comparar DL con 9
-    ja error                ; Si es mayor que 9, verificar si es un punto
-    ret                      ; Retornar de la subrutina
-
-check_point:
-    cmp dl, '.'             ; Comparar con el carácter punto '.'
-    jne error                ; Si no es un punto, es un error
-    ret                      ; Retornar de la subrutina
-       ; Llamar a la rutina de manejo de errores
-error:
-    JMP done 
-
-;calculo de perimetro
-perimetro:
-    ;partes enteras
-    mov ax,[dato_01] ;cambiar para usar con BX buffer dinamico para que la formula sea universal
-    ;implementar uso de pila, push BX aqui
-    xor bx,bx
-    mov bl, [lados]
-    mul bx
-    ;guardar resultado
-    add BYTE [peri_r+2],al
-    adc ah,0
-    ADD BYTE [peri_r+1],ah
-    ADC BYTE [peri_r],dl
-    ;VERIFICADO
-
-    ;parte entera del input por parte decimal de lados
-    ;pop BX aqui
-    mov ax,[dato_01]
-    xor bx,bx
-    mov bl, [lados+1]
-    mul bx
-    mov cx,100
-    div cx
-    ;guardar resultado
-    add byte [peri_r+3],dl
-    PUSH AX
-    XOR AX,AX
-    mov al,[peri_r+3]
-    div Cl
-    MOV byte [peri_r+3],ah
-    mov ch,al
-    POP AX
-    add al,ch
-    ADD BYTE [peri_r+2],al
-    adc ah,0
-    add byte [peri_r+1],ah
-    adc byte [peri_r],0
-    ;VERIFICADO
-    
-    
-    ;parte decimal del input parte entera de lados
-    mov al,[dato_01+2]
-    xor bx,bx
-    MOV AH,0
-    mov bl,[lados]
-    mul bl
-    mov cx,100
-    div Cl
-    add BYTE [peri_r+3],ah
-    PUSH AX
-    XOR AX,AX
-    mov al,[peri_r+3]
-    div CL
-    mov byte [peri_r+3],ah
-    mov ch,al
-    POP AX
-    add al,ch
-    MOV CH,0
-    add BYTE [peri_r+2],AL
-    adc CH,0
-    ADD BYTE [peri_r+1],ch
-    adc byte [peri_r],0
-    ;VERIFICADO
-    
-    
-    ;para ambos decimales
-    mov al,[dato_01+2]
-    xor bx,bx
-    MOV AH,0
-    mov bl,[lados+1]
-    mul bl
-    mov cx,100
-    div cl
-    ;guardar resultado
-    add BYTE [peri_r+3],al
-    XOR AX,AX
-    mov al,[peri_r+3]
-    div cL
-    mov byte [peri_r+3],ah
-    MOV AH,0
-    add BYTE [peri_r+2],AL
-    ADC ah,0
-    ADD BYTE [peri_r+1],ah
-    adc byte [peri_r],0
-    ;VERIFICADO
-    ;retorna
-    ret
-
+      
 case_circle:
     ; Imprime mensaje de círculo y sale
     mov ah, 09h  ; Función de MS-DOS para imprimir cadena
@@ -366,23 +201,5 @@ print_loop:
     cmp sp, 0xFFFE            ; Verificar si la pila está vacía (valor inicial de SP en DOS)
     jne print_loop            ; Repetir si aún hay valores en la pila
 
-
-
-
-
-
-
-
-
-
-  
-
-    
-
-
-
-    
-
-    
-
-
+%include 'input.inc'
+%include 'calc.inc'
