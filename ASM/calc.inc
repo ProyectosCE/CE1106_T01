@@ -108,3 +108,6 @@ multiplicacion:
     ;VERIFICADO 25-08-24 03:28
     ;retorna
     ret
+
+division:
+    jmp done

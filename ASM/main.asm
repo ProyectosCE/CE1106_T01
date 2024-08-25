@@ -112,51 +112,7 @@ done:
     int 21h  ; Interrupción de MS-DOS para salir
 
 
-print_digitos:
-    mov ah , 02h
-    pop dx
-    int 21h
-    loop print_digitos
-
-;basado el el codigo del usuario de stackoverflow @rcgldr 
-;recuperado de https://stackoverflow.com/a/41501934/26912080
-convert_entero:
-    ; Cargar la parte más significativa 
-    mov ax, [peri_r]              ; Cargar los primeros 2 bytes (parte más significativa)
-    mov bx, [peri_r+2]
-    int 3            ; Cargar los últimos 2 bytes (parte menos significativa)
-    or ax, bx                 ; Realizar una operación lógica OR para verificar si ambos son 0
-    jz print_loop         ; Si ambos son 0, saltar a imprimir los resultados
-
-    ; Si no son 0, continuar la división
-    mov ax, [peri_r]
-    xor dx, dx                ; Limpiar DX antes de la división
-    mov cx, 10                ; Divisor (decimal)
-    div cx                    ; Dividir DX:AX por 10, AX = cociente, DX = residuo
-
-    ; Almacenar el cociente y residuo
-    mov [peri_r], ax              ; Guardar el cociente en los primeros 2 bytes de peri_r                   ; Guardar el residuo en la pila
-
-    ; Repetir con la parte menos significativa
-    mov ax, [peri_r+2]            ; Cargar los bytes menos significativos en AX                ; Limpiar DX antes de la división
-    div cx                    ; Dividir DX:AX por 10
-
-    ; Almacenar el cociente y residuo
-    mov [peri_r+2], ax            ; Guardar el cociente en los últimos 2 bytes de peri_r
-    push dx                   ; Guardar el residuo en la pila
-
-    jmp convert_entero         ; Repetir el ciclo
-
-print_loop:
-    pop dx
-    int 3                    ; Sacar el residuo de la pila
-    add dl, '0'               ; Convertir el residuo a carácter ASCII
-    mov ah, 02h               ; Función DOS para imprimir un carácter
-    int 21h                   ; Imprimir el carácter
-    cmp sp, 0xFFFE            ; Verificar si la pila está vacía (valor inicial de SP en DOS)
-    jne print_loop            ; Repetir si aún hay valores en la pila
-
-%include 'input.inc'
+%include 'io.inc'
 %include 'calc.inc'
 %include 'figuras/square.inc'
 %include 'figuras/circle.inc'
