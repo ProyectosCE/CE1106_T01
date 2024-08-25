@@ -328,38 +328,43 @@ print_digitos:
     int 21h
     loop print_digitos
 
-; Inicializar puntero al buffer
-mov si, offset peri_r
-
-; Inicializar registros para la parte entera
-xor ax, ax             ; Limpiar AX
-xor bx, bx             ; Limpiar BX
-xor dx, dx             ; Limpiar DX
-
-; Cargar los 4 bytes de la parte entera en DX:AX:BX
-mov dx, [si]           ; Cargar B1 (byte más significativo) en DX
-mov ax, [si+2]         ; Cargar B2 y B3 en AX
-mov bx, [si+4]         ; Cargar B4 (byte menos significativo) en BX
-
-; Convertir DX:AX:BX de hexadecimal a decimal
-mov cx, 10             ; Configurar CX para la división por 10
-
+;basado el el codigo del usuario de stackoverflow @rcgldr 
+;recuperado de https://stackoverflow.com/a/41501934/26912080
 convert_entero:
-    xor dx, dx         ; Limpiar DX antes de la división
-    div cx             ; Dividir DX:AX por 10
-    push dx            ; Guardar el resto (el siguiente dígito decimal)
-    mov bx, ax         ; Mover AX (cociente) a BX
-    loop convert_entero; Repetir hasta convertir toda la parte entera
+    ; Cargar la parte más significativa 
+    mov ax, [peri_r]              ; Cargar los primeros 2 bytes (parte más significativa)
+    mov bx, [peri_r+2]
+    int 3            ; Cargar los últimos 2 bytes (parte menos significativa)
+    or ax, bx                 ; Realizar una operación lógica OR para verificar si ambos son 0
+    jz print_loop         ; Si ambos son 0, saltar a imprimir los resultados
 
-; Imprimir la parte entera en pantalla
-print_entero:
-    pop dx             ; Obtener el siguiente dígito decimal
-    add dl, '0'        ; Convertirlo a carácter ASCII
-    mov ah, 02h        ; Función DOS para imprimir un carácter
-    int 21h            ; Llamar a DOS para imprimir
-    loop print_entero  ; Repetir para todos los dígitos
+    ; Si no son 0, continuar la división
+    mov ax, [peri_r]
+    xor dx, dx                ; Limpiar DX antes de la división
+    mov cx, 10                ; Divisor (decimal)
+    div cx                    ; Dividir DX:AX por 10, AX = cociente, DX = residuo
 
+    ; Almacenar el cociente y residuo
+    mov [peri_r], ax              ; Guardar el cociente en los primeros 2 bytes de peri_r                   ; Guardar el residuo en la pila
 
+    ; Repetir con la parte menos significativa
+    mov ax, [peri_r+2]            ; Cargar los bytes menos significativos en AX                ; Limpiar DX antes de la división
+    div cx                    ; Dividir DX:AX por 10
+
+    ; Almacenar el cociente y residuo
+    mov [peri_r+2], ax            ; Guardar el cociente en los últimos 2 bytes de peri_r
+    push dx                   ; Guardar el residuo en la pila
+
+    jmp convert_entero         ; Repetir el ciclo
+
+print_loop:
+    pop dx
+    int 3                    ; Sacar el residuo de la pila
+    add dl, '0'               ; Convertir el residuo a carácter ASCII
+    mov ah, 02h               ; Función DOS para imprimir un carácter
+    int 21h                   ; Imprimir el carácter
+    cmp sp, 0xFFFE            ; Verificar si la pila está vacía (valor inicial de SP en DOS)
+    jne print_loop            ; Repetir si aún hay valores en la pila
 
 
 
