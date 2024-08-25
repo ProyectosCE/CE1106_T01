@@ -97,12 +97,6 @@ case_show_figures:
     je case_circle 
     jmp done 
 
-case_circle:
-    ; Imprime mensaje de círculo y sale
-    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
-    lea dx, [circle]  ; Carga la dirección del mensaje de círculo en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
-    jmp done  ; Salta a terminar el programa
 
 default_case:
     ; Mensaje por defecto en caso de entrada inválida
@@ -165,3 +159,4 @@ print_loop:
 %include 'input.inc'
 %include 'calc.inc'
 %include 'figuras/square.inc'
+%include 'figuras/circle.inc'

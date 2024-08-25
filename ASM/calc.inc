@@ -12,11 +12,11 @@ multiplicacion:
     mul bx
     ;guardar resultado
     mov bx,[respuesta]
-    add BYTE [bx+3],al
-    adc ah,0
-    ADD BYTE [bx+2],ah
-    ADC [bx],dx
-    ;VERIFICADO
+    MOV [bx+3],AL
+    MOV [bx+2],AH
+    MOV [bX+1],dl
+    MOV [bx],dh
+    ;VERIFICADO 24-08-24 23:53
 
     mov bx,[operando1] 
     mov ax,[bx]
@@ -28,7 +28,7 @@ multiplicacion:
     div cx
     ;guardar resultado
     mov bx,[respuesta]
-    add byte [bx+4],dl
+    add [bx+4],dl
     PUSH AX
     XOR AX,AX
     mov al,[bx+4]
@@ -36,12 +36,18 @@ multiplicacion:
     MOV byte [bx+4],ah
     mov ch,al
     POP AX
+    XOR DX,DX
     add al,ch
-    ADD BYTE [bx+3],al
-    adc ah,0
-    add byte [bx+2],ah
-    adc byte [bx],0
-    ;VERIFICADO
+    MOV CL,[bx+3]
+    ADD CL,AL
+    MOV [BX+3],CL
+    ADC AH,0
+    ADD [bx+2],AH
+    ADC DL,0
+    ADD [bX+1],dl
+    ADC DH,0
+    ADD [bx],dh
+    ;VERIFICADO 25-08-24 03:28
     
     
     ;parte decimal del input parte entera de lados
@@ -53,7 +59,7 @@ multiplicacion:
     mov bx,[bx]
     mul bx
     mov cx,100
-    div Cl
+    div CX
     mov bx,[respuesta]
     add BYTE [bx+4],dl
     PUSH AX
@@ -64,12 +70,13 @@ multiplicacion:
     mov ch,al
     POP AX
     MOV CH,0
-    add [bx+2],AX
+    ADD BYTE [bx+3],AL
+    ADC AH,0
+    ADD BYTE [bx+2],AH
     adc CH,0
     ADD BYTE [bx+1],ch
     adc byte [bx],0
-    ;VERIFICADO
-    
+    ;VERIFICADO 25-08-24 03:28
     
     ;para ambos decimales
     mov bx,[operando1] 
@@ -92,7 +99,11 @@ multiplicacion:
     add BYTE [bx+3],AL
     ADC ah,0
     ADD BYTE [bx+2],ah
-    adc word [bx],0
-    ;VERIFICADO
+    MOV AX,0
+    adc AL,0
+    ADD BYTE [bx+1],al
+    ADC AH,0
+    adc byte [bx],AH
+    ;VERIFICADO 25-08-24 03:28
     ;retorna
     ret
