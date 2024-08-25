@@ -182,4 +182,4 @@ print_loop:
 
 %include 'input.inc'
 %include 'calc.inc'
-%include 'square.inc'
+%include 'figuras/square.inc'
