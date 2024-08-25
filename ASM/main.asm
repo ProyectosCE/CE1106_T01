@@ -15,38 +15,26 @@ section .data
     square_msg db 0x0A,'Cuando mide el lado?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta para el cuadrado
     result_peri db 0x0A, 'el perimetro es: ',0x09,'', 0x0D, 0x0A, '$' 
 
-    ;aqui va la cantidad de lados de cada figura lo necesario para calcular el perimetro
-
-    square_sides db 0x04
-    triangle_sides db 0x03
-    diamond_sides db 0x04
-    pentagon_sides db 0x05
-    hexagon_sides dw 0x06
-
-    ;CONSTANTES
-    pi_val db 0x013A
-    raiz_tres db 0xAD
-    
-
-
-section .bss
-    input_buffer resb 2  ; Reserva 2 bytes para la primera entrada del usuario
-    second_input resb 2  ; Reserva 2 bytes para la segunda entrada, donde se elige la figura
-    
-    
-    
+section .bss   
+    ;buffer general de entrada de texto (reutilizable)
     buffer_text resb 10 ; maxima entrada del input (7 máx y 2 bytes de control)
-    
- 
+    ;buffer para datos numericos (hasta 3 para las figuras que lo ocupan)
     dato_01 resb 3 ;dato Numerico para input 1
     dato_02 resb 3 ;dato Numerico para input 2
     dato_03 resb 3 ;dato Numerico para input 3
-    dato_lista resw 3  ;buffer lista de las direcciones de los buffer de datos
+    
+    ;Buffer a usar en operaciones matematicas (guardar direcciones de los buffers)
+    operando1 resb 2
+    operando2 resb 2
+    respuesta resb 2
 
-    lados resb 2
+    buftest resb 3
 
-    peri_r resb 4 ;para cualquier figura maximo FFFF FFFF
-    area_r resb 7 ;para cualquier valor, maximo el circulo 0F FFFF FFFF FFFF
+    ;Buffers para respuestas, de 5 bytes
+    ; 4 bytes max para la parte entera
+    ; 1 byte para la parte decimal
+    peri_r resb 5 ;para cualquier figura maximo FFFF FFFF
+    area_r resb 5 ;para cualquier valor, maximo el circulo 0F FFFF FFFF FFFF
     
 section .text
     global _start  ; Declaración global del punto de entrada
@@ -55,12 +43,6 @@ _start:
     jmp initial_case  ; Salta a la sección que pregunta si desea iniciar
 
 initial_case:
-    ;inicializar las direcciones de la lista
-    mov byte [dato_01],0x0000
-    mov word [dato_lista],dato_01
-    mov word [dato_lista+2],dato_02
-    mov word [dato_lista+2],dato_03
-
     ; Imprime el mensaje inicial preguntando si quiere iniciar
     mov ah, 09h  
     lea dx, [initial_msg]  
