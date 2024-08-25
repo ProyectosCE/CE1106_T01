@@ -18,6 +18,7 @@ multiplicacion:
     MOV [bx],dh
     ;VERIFICADO 24-08-24 23:53
 
+    ; // MULTIPLICACION DE PARTE ENTERA-DECIMAL
     mov bx,[operando1] 
     mov ax,[bx]
     xor bx,bx
@@ -50,7 +51,7 @@ multiplicacion:
     ;VERIFICADO 25-08-24 03:28
     
     
-    ;parte decimal del input parte entera de lados
+    ; // MULTIPLICACION DE PARTE DECIMAL-ENTERA
     mov bx,[operando1] 
     mov ax,[bx+2]
     xor bx,bx
@@ -78,7 +79,7 @@ multiplicacion:
     adc byte [bx],0
     ;VERIFICADO 25-08-24 03:28
     
-    ;para ambos decimales
+    ; // MULTIPLICACION DE PARTE DECIMAL-DECIMAL
     mov bx,[operando1] 
     mov al,[bx+2]
     xor bx,bx
