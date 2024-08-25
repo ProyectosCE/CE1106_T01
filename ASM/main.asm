@@ -328,6 +328,39 @@ print_digitos:
     int 21h
     loop print_digitos
 
+; Inicializar puntero al buffer
+mov si, offset peri_r
+
+; Inicializar registros para la parte entera
+xor ax, ax             ; Limpiar AX
+xor bx, bx             ; Limpiar BX
+xor dx, dx             ; Limpiar DX
+
+; Cargar los 4 bytes de la parte entera en DX:AX:BX
+mov dx, [si]           ; Cargar B1 (byte más significativo) en DX
+mov ax, [si+2]         ; Cargar B2 y B3 en AX
+mov bx, [si+4]         ; Cargar B4 (byte menos significativo) en BX
+
+; Convertir DX:AX:BX de hexadecimal a decimal
+mov cx, 10             ; Configurar CX para la división por 10
+
+convert_entero:
+    xor dx, dx         ; Limpiar DX antes de la división
+    div cx             ; Dividir DX:AX por 10
+    push dx            ; Guardar el resto (el siguiente dígito decimal)
+    mov bx, ax         ; Mover AX (cociente) a BX
+    loop convert_entero; Repetir hasta convertir toda la parte entera
+
+; Imprimir la parte entera en pantalla
+print_entero:
+    pop dx             ; Obtener el siguiente dígito decimal
+    add dl, '0'        ; Convertirlo a carácter ASCII
+    mov ah, 02h        ; Función DOS para imprimir un carácter
+    int 21h            ; Llamar a DOS para imprimir
+    loop print_entero  ; Repetir para todos los dígitos
+
+
+
 
 
 
