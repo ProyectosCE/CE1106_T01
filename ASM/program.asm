@@ -1,4 +1,5 @@
 org 100h
+
 section .data
     default_ms db 'Otras cosas', 0x09,'',0x0D, 0x0A, '$'  ; Mensaje por defecto
     initial_msg db 'Quieres iniciar [Y/N]',0x09,'', 0x0D, 0x0A, '$'  ; Mensaje inicial que pregunta si se desea iniciar
@@ -14,24 +15,27 @@ section .data
     square_msg db 0x0A,'Cuando mide el lado?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta para el cuadrado
     result_peri db 0x0A, 'el perimetro es: ',0x09,'', 0x0D, 0x0A, '$' 
 
-    ;aqui va la cantidad de lados de cada figura lo necesario para calcular el perimetro
-
-    square_sides dw 4
-    triangle_sides dw 3
-    diamond_sides dw 4
-    pentagon_sides dw 5
-    hexagon_sides dw 6
+section .bss   
+    ;buffer general de entrada de texto (reutilizable)
+    buffer_text resb 10 ; maxima entrada del input (7 máx y 2 bytes de control)
+    ;buffer para datos numericos (hasta 3 para las figuras que lo ocupan)
+    dato_01 resb 3 ;dato Numerico para input 1
+    dato_02 resb 3 ;dato Numerico para input 2
+    dato_03 resb 3 ;dato Numerico para input 3
     
+    ;Buffer a usar en operaciones matematicas (guardar direcciones de los buffers)
+    operando1 resb 2
+    operando2 resb 2
+    respuesta resb 2
 
+    buftest resb 3
 
-section .bss
-    input_buffer resb 2  ; Reserva 2 bytes para la primera entrada del usuario
-    second_input resb 2  ; Reserva 2 bytes para la segunda entrada, donde se elige la figura
-    buffer_lado_square resb 100 ; maxima entrada del input
-    buffer_para_entero resb 8
-    buffer_peque resb 2
-
-
+    ;Buffers para respuestas, de 5 bytes
+    ; 4 bytes max para la parte entera
+    ; 1 byte para la parte decimal
+    peri_r resb 5 ;para cualquier figura maximo FFFF FFFF
+    area_r resb 5 ;para cualquier valor, maximo el circulo 0F FFFF FFFF FFFF
+    
 section .text
     global _start  ; Declaración global del punto de entrada
 
@@ -40,13 +44,12 @@ _start:
 
 initial_case:
     ; Imprime el mensaje inicial preguntando si quiere iniciar
-    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
-    lea dx, [initial_msg]  ; Carga la dirección del mensaje inicial en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
-
+    mov ah, 09h  
+    lea dx, [initial_msg]  
+    int 21h  
     ; Leer respuesta del usuario (Y/N)
-    mov ah, 01h  ; Función de MS-DOS para leer un solo carácter del teclado
-    int 21h  ; Interrupción de MS-DOS para leer entrada
+    mov ah, 01h  
+    int 21h  
     cmp al, 'Y'  ; Compara la entrada con 'Y' (mayúscula)
     je case_show_figures  ; Si es 'Y', salta a mostrar las figuras
     cmp al, 'N'  ; Compara la entrada con 'N' (mayúscula)
@@ -55,75 +58,45 @@ initial_case:
 
 case_show_figures:
     ; Imprime las opciones de figuras disponibles
-    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
-    lea dx, [square]  ; Carga la dirección del mensaje de cuadrado en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
+    mov ah, 09h 
+    lea dx, [square]
+    int 21h 
 
-    lea dx, [circle]  ; Carga la dirección del mensaje de círculo en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
+    lea dx, [circle]  
+    int 21h 
 
-    lea dx, [triangle]  ; Carga la dirección del mensaje de triángulo en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
+    lea dx, [triangle]  
+    int 21h  
 
-    lea dx, [diamond]  ; Carga la dirección del mensaje de diamante en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
+    lea dx, [diamond]  
+    int 21h  
 
-    lea dx, [pentagon]  ; Carga la dirección del mensaje de pentágono en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
+    lea dx, [pentagon] 
+    int 21h  
 
-    lea dx, [hexagon]  ; Carga la dirección del mensaje de hexágono en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
+    lea dx, [hexagon]  
+    int 21h  
 
-    lea dx, [trapeze]  ; Carga la dirección del mensaje de trapecio en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
+    lea dx, [trapeze]  
+    int 21h  
 
-    lea dx, [parallelogram]  ; Carga la dirección del mensaje de paralelogramo en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
+    lea dx, [parallelogram]  
+    int 21h  
 
     ; Pregunta qué figura quiere el usuario
-    lea dx, [askn_msg]  ; Carga la dirección del mensaje que pide seleccionar figura en dx
-    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
+    lea dx, [askn_msg]  
+    mov ah, 09h  
+    int 21h 
 
     ; Leer elección del usuario (1-8)
-    mov ah, 01h  ; Función de MS-DOS para leer un solo carácter del teclado
-    int 21h  ; Interrupción de MS-DOS para leer entrada
-    cmp al, '1'  ; Compara la entrada con '1'
-    je case_square  ; Si es '1', salta al caso del cuadrado
-    cmp al, '2'  ; Compara la entrada con '2'
-    je case_circle  ; Si es '2', salta al caso del círculo
-    jmp done  ; Si no es ninguna de las opciones válidas, termina el programa
+    mov ah, 01h  
+    int 21h 
+    cmp al, '1'  
+    je case_square  
+    cmp al, '2'  
+    je case_circle 
+    jmp done 
 
-case_square:
-    ; Pregunta sobre el lado del cuadrado
-    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
-    lea dx, [square_msg]  ; Carga la dirección del mensaje de consulta del lado del cuadrado en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
-    
-    mov byte [buffer_lado_square],100
-    mov byte [buffer_lado_square+1],0
-
-    ; Leer el lado del cuadrado (suponiendo una entrada numérica)
-    mov ah, 0Ah  ; Función de MS-DOS para leer cadena
-    lea dx, [buffer_lado_square]  ; Carga la dirección del buffer donde se almacenará la entrada del lado del cuadrado
-    int 21h  ; Interrupción de MS-DOS para leer cadena
-    jmp result_msg
-
-
-
-result_msg:
-    mov ah,09h
-    lea dx, [result_peri]
-    int 21h
-    jmp input_to_ax
-
-
-case_circle:
-    ; Imprime mensaje de círculo y sale
-    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
-    lea dx, [circle]  ; Carga la dirección del mensaje de círculo en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
-    jmp done  ; Salta a terminar el programa
 
 default_case:
     ; Mensaje por defecto en caso de entrada inválida
@@ -131,178 +104,15 @@ default_case:
     lea dx, [default_ms]  ; Carga la dirección del mensaje por defecto en dx
     int 21h  ; Interrupción de MS-DOS para imprimir cadena
     jmp initial_case  ; Salta a terminar el programa
+
 done:
     ; Termina el programa y vuelve a MS-DOS
     mov ah, 4Ch  ; Función de MS-DOS para terminar el programa
+    INT 3
     int 21h  ; Interrupción de MS-DOS para salir
 
-input_to_ax: ;este paso es para un ciclo 
-    xor ax, ax
-    xor bx, bx    
-    xor cx,cx
-    mov cl, [buffer_lado_square+1]
-    lea si, [buffer_lado_square+2]  ; Mueve fuera del bucle 
-    ;call restricciones
-    xor ax, ax
-    xor bx, bx    
-    xor cx,cx
-    mov cl, [buffer_lado_square+1]
-    lea si, [buffer_lado_square+2]  ; Mueve fuera del bucle
-    jmp loop_convertidor
-    
-    
-restricciones: ;verifica que la entrda solo sean numeros:
-    mov dx, 0                       ; Asegura que DX esté en 0
-    mov dl, [si]                    ; Lee el valor en DL
-    sub dx, '0'
-    cmp dl,9
-    jg initial_case
-    cmp dl,0
-    jl initial_case                     ; Convierte de ASCII a valor numérico                      ; Preparación para multiplicación por 10 
-    cmp cx, 1                    ; Añade el dígito convertido al acumulador                           ; Multiplica AX por 10 (AX = AX * 10)
-    inc si                     ; Mueve al siguiente carácte
-    loop restricciones
-    ret 
-    
 
-loop_convertidor:
-    mov dx, 0                       ; Asegura que DX esté en 
-    mov dl, [si]
-    cmp dl, 46
-    je separacion                    ; Lee el valor en DL
-    sub dx, '0'                     ; Convierte de ASCII a valor numérico
-    mov bx, 10                      ; Preparación para multiplicación por 10 
-    add ax, dx
-    cmp cx, 1
-    je  calculo_area
-    inc si
-    mov dl, [si]
-    cmp dl,46
-    je separacion                    ; Añade el dígito convertido al acumulador  
-    mul bx                          ; Multiplica AX por 10 (AX = AX * 10)
-                         ; Mueve al siguiente carácte
-    loop loop_convertidor 
-    jmp calculo_area   
-
-calculos:
-    mov bx, 4
-    mul bx
-    mov bx,100
-    div bx
-    mov [buffer_para_entero+4],dx
-    mov [buffer_peque],ax
-    mov ax, [buffer_para_entero]
-    mov bx, 4
-    mul bx
-    add ax, [buffer_peque]
-    mov [buffer_para_entero],ax
-    mov ax, [buffer_para_entero+4]
-    jmp from_ax_db
-           
-           
-calculo_area: ;dice area pero es para sumas entre entradas
-    xor bx, bx
-    xor cx,cx
-    xor dx,dx
-
-    mov bx, ax
-    add ax, bx
-    mov bx,100
-    div bx
-    mov [buffer_para_entero+4],dx
-    mov [buffer_peque],ax
-    mov ax, [buffer_para_entero]
-    mov bx, [buffer_para_entero]
-    add ax, bx
-    add ax, [buffer_peque]
-    mov [buffer_para_entero],ax
-    mov ax, [buffer_para_entero+4]
-    jmp from_ax_db           
-           
- 
-separacion:
-    inc si
-    dec cx
-    dec cx
-    mov [buffer_para_entero], ax
-    xor ax, ax
-    xor dx,dx
-    jmp loop_convertidor 
-
-
-from_ax_db:
-    xor dx,dx
-    mov bx, 10
-    div bx
-    add dx, '0'
-    push dx
-    inc cx
-    cmp ax, 0
-    jne from_ax_db
-    jmp clean_to_dec 
-    
-clean_to_dec:
-    push 46
-    xor ax,ax
-    mov ax, [buffer_para_entero]
-    jmp from_ax_db_dec
-
-from_ax_db_dec:
-    xor dx,dx
-    mov bx, 10
-    div bx
-    add dx, '0'
-    push dx
-    inc cx
-    cmp ax, 0
-    jne from_ax_db_dec
-    jmp imprimir_digitos
-
-   
-
-imprimir_digitos:
-    mov ah, 02h
-    pop dx
-    int 21h
-    loop imprimir_digitos
-    jmp done
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-    
-
-
-
-    
-
-    
-
-
+%include 'io.inc'
+%include 'calc.inc'
+%include 'figuras/square.inc'
+%include 'figuras/circle.inc'
