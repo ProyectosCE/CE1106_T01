@@ -36,6 +36,7 @@ section .bss
     ; 1 byte para la parte decimal
     peri_r resb 5 ;para cualquier figura maximo FFFF FFFF
     area_r resb 5 ;para cualquier valor, maximo el circulo 0F FFFF FFFF FFFF
+    temp_r resb 5
     
 section .text
     global _start  ; Declaración global del punto de entrada

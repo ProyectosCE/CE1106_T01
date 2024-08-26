@@ -81,7 +81,8 @@ multiplicacion:
     mov byte [bx+4],ah
     mov ch,al
     POP AX
-    MOV CH,0
+    add al,ch
+    mov ch,0
     ADD BYTE [bx+3],AL
     ADC AH,0
     ADD BYTE [bx+2],AH

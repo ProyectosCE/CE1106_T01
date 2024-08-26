@@ -1,5 +1,6 @@
 section .data
     pi_val db 0x00, 0x03, 0x0E
+    dos_val db 0x00, 0x02, 0x00
     ask_radio db 0x0A,'Cuando mide el radio?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta para el cuadrado
 
 case_circle:
@@ -16,13 +17,30 @@ case_circle:
     ;buffer donde se va a guardar el numero leido
     mov bx, dato_01
     call procesar_entero
-       
+
     mov word [operando1],dato_01
     mov word [operando2],pi_val
-    mov word [respuesta],peri_r
-    
+    mov word [respuesta],temp_r
+
     Call multiplicacion
 
+    mov AH,[temp_r]
+    mov AL,[temp_r+1]
+    mov BH,[temp_r+2]
+    mov BL,[temp_r+3]
+    mov ch,[temp_r+4]
+
+    INT 3
+    
+   
+
+    mov bx,[respuesta]
+    call cinco_to_tres
+    mov word [operando1],dos_val
+    mov word [operando2],buftemp
+    mov word [respuesta],peri_r
+    
+    call multiplicacion
     mov bx,result_peri
     call imp_msg
     mov bx,[respuesta]
