@@ -128,8 +128,12 @@ repetir:
 
 reinciar_buf:
     xor al, al
-    mov si, buffer_text+2
-    mov cx, 10
+    mov si, buffer_text+1
+    mov cx, 9
+    call clear_loop
+    
+    mov si, dato_01
+    mov cx, 3
     call clear_loop
     
     mov si, dato_02

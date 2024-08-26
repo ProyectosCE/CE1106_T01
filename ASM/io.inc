@@ -34,18 +34,6 @@ procesar_decimal:
     inc si
     call add_digit_decimal
     loop procesar_decimal
-    jmp verificar_decimal
-
-verificar_decimal:
-    mov al, [bx+2]
-    cmp al,10
-    jb decimal_xdiez
-    ret
-
-decimal_xdiez:
-    mov cl,10
-    mul cl
-    mov [bx+2],al
     ret
 
 fin_procesar_entero:
