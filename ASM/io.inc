@@ -1,3 +1,6 @@
+section .data
+    error_dig db 0x0A,'Favor ingrese un numero valido (0-9999.99)', 0x0D, 0x0A, '$'
+
 lectura: ;lee cualquier entrada segun se requiera en el buffer_text de máximo 8 caracteres (7 de entrada y el enter)
     mov byte [buffer_text],8
     mov ah, 0Ah
@@ -23,6 +26,10 @@ procesar_entero:
 procesar_decimal:
     mov dl, [buffer_text+si+2]
     call check_digit
+    cmp dl,'.'
+    je error
+    cmp dl,','
+    je error
     sub dl, '0'
     inc si
     call add_digit_decimal
@@ -93,7 +100,10 @@ check_comma:
     
 ; Llamar a la rutina de manejo de errores
 error:
-    JMP done 
+    lea dx, [error_dig]  
+    mov ah, 09h  
+    int 21h 
+    JMP repetir 
 
 ;basado el el codigo del usuario de stackoverflow @rcgldr 
 ;recuperado de https://stackoverflow.com/a/41501934/26912080
