@@ -1,27 +1,28 @@
 org 100h
 
 section .data
-    default_ms db 'Otras cosas',0x0D, 0x0A, '$'  ; Mensaje por defecto
-    initial_msg db 'Bienvenido a GeometryTEC',0x0D, 0x0A, '$'  ; Mensaje inicial que pregunta si se desea iniciar
-    askn_msg db 0x0A,'Escoge una figura:', 0x0D, 0x0A, '$'  ; Mensaje que pide al usuario que escoja una figura
+    default_ms db 'Otras cosas', 0x0D, 0x0A, '$'  ; Mensaje por defecto
+    initial_msg db 'Bienvenido a GeometryTEC', 0x0D, 0x0A, '$'  ; Mensaje inicial que pregunta si se desea iniciar
+    askn_msg db 0x0A, 'Escoge una figura:', 0x0D, 0x0A, '$'  ; Mensaje que pide al usuario que escoja una figura
 
-    square db 0x0A,'1. Square',0x0D, 0x0A, '$'  ; Opción para cuadrado
-    circle db '2. Circle',0x0D, 0x0A, '$'  ; Opción para círculo
-    triangle db '3. Triangle',0x0D, 0x0A, '$'  ; Opción para triángulo
-    diamond db '4. Diamond',0x0D, 0x0A, '$'  ; Opción para diamante
-    pentagon db '5. Pentagon',0x0D, 0x0A, '$'  ; Opción para pentágono
-    hexagon db '6. Hexagon',0x0D, 0x0A, '$'  ; Opción para hexágono
-    trapeze db '7. Trapeze',0x0D, 0x0A, '$'  ; Opción para trapecio
-    parallelogram db '8. Parallelogram',0x0D, 0x0A, '$'  ; Opción para paralelogramo
-    ask_lado db 0x0A,'Cuando mide el lado?',0x0D, 0x0A, '$'  ; Pregunta cuanto mide el lado
-    result_peri db 0x0A, 'el perimetro es: ','$' 
-    result_area db 0x0A, 'el area es: ', '$'
+    square db 0x0A, '1. Cuadrado', 0x0D, 0x0A, '$'  ; Opción para cuadrado
+    circle db '2. Círculo', 0x0D, 0x0A, '$'  ; Opción para círculo
+    triangle db '3. Triángulo', 0x0D, 0x0A, '$'  ; Opción para triángulo
+    diamond db '4. Diamante', 0x0D, 0x0A, '$'  ; Opción para diamante
+    pentagon db '5. Pentágono', 0x0D, 0x0A, '$'  ; Opción para pentágono
+    hexagon db '6. Hexágono', 0x0D, 0x0A, '$'  ; Opción para hexágono
+    trapeze db '7. Trapecio', 0x0D, 0x0A, '$'  ; Opción para trapecio
+    parallelogram db '8. Paralelogramo', 0x0D, 0x0A, '$'  ; Opción para paralelogramo
 
-    repetir_msg db 0x0A,'Por favor presione:',0x0A, '$'  ; Mensaje que pide al usuario repetir o no
-    repsi db '1. Hacer otra operacion', 0x0D, 0x0A, '$'
-    repno db '2. Salir', 0x0D, 0x0A, '$'
+    ask_lado db 0x0A, '¿Cuánto mide el lado?', 0x0D, 0x0A, '$'  ; Pregunta cuanto mide el lado
+    result_peri db 0x0A, 'El perímetro es: ', '$'  ; Mensaje para el resultado del perímetro
+    result_area db 0x0A, 'El área es: ', '$'  ; Mensaje para el resultado del área
 
-    salida_msg db 0x0A,'Gracias por usar GeometryTEC:', 0x0D, 0x0A, '$' 
+    repetir_msg db 0x0A, 'Por favor presione:', 0x0A, '$'  ; Mensaje que pide al usuario repetir o no
+    repsi db '1. Hacer otra operación', 0x0D, 0x0A, '$'  ; Opción para repetir la operación
+    repno db '2. Salir', 0x0D, 0x0A, '$'  ; Opción para salir
+
+    salida_msg db 0x0A, 'Gracias por usar GeometryTEC:', 0x0D, 0x0A, '$'  ; Mensaje de salida
 
 section .bss   
     ;buffer general de entrada de texto (reutilizable)

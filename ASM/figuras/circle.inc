@@ -1,8 +1,7 @@
 section .data
     pi_val db 0x00, 0x03, 0x0E
     dos_val db 0x00, 0x02, 0x00
-    ask_radio db 0x0A,'Cuando mide el radio?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta para el cuadrado
-    ask_altura db 0x0A,'Cuando mide la altura?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta para el cuadrado
+    ask_radio db 0x0A,'Cuando mide el radio?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta para el radio
 
 case_circle:
     mov ah, 09h  ; Función de MS-DOS para imprimir cadena
