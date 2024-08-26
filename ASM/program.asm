@@ -59,6 +59,7 @@ initial_case:
     jmp case_show_figures
 
 case_show_figures:
+    call reinciar_buf
     ; Pregunta qué figura quiere el usuario
     lea dx, [askn_msg]  
     mov ah, 09h  
@@ -124,6 +125,55 @@ repetir:
     cmp al, '2'  
     je done 
     jmp repetir
+
+reinciar_buf:
+    xor al, al
+    mov si, buffer_text+2
+    mov cx, 10
+    call clear_loop
+    
+    mov si, dato_02
+    mov cx, 3
+    call clear_loop
+
+    mov si, dato_03
+    mov cx, 3
+    call clear_loop
+    
+    mov si, buftemp
+    mov cx, 3
+    call clear_loop
+
+    mov si, peri_r
+    mov cx, 5
+    call clear_loop
+
+    mov si, area_r
+    mov cx, 5
+    call clear_loop
+
+    mov si, temp_r
+    mov cx, 5
+    call clear_loop
+
+    mov si, operando1
+    mov cx, 2
+    call clear_loop
+    mov si, operando2
+    mov cx, 2
+    call clear_loop
+    mov si, respuesta
+    mov cx, 2
+    call clear_loop
+
+    ret
+
+clear_loop:
+    mov [si], al            ; Escribir 0 en la posición actual del buffer
+    inc si                  ; Avanzar al siguiente byte en el buffer
+    loop clear_loop         ; Repetir hasta que CX sea 0
+
+    ret                     ; Retornar de la subrutina
 
 
 done:
