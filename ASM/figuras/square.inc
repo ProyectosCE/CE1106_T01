@@ -15,11 +15,11 @@ case_square:
 
     ;OPERACIONES PROPIAS DEL CUADRADO:
     mov ax,4h
-    mov [buftest],ax
-    mov byte [buftest+2],00
+    mov [buftemp],ax
+    mov byte [buftemp+2],00
 
     mov word [operando1],dato_01
-    mov word [operando2],buftest
+    mov word [operando2],buftemp
     mov word [respuesta],peri_r
     
     call multiplicacion
