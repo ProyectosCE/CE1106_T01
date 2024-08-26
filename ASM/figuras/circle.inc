@@ -46,4 +46,4 @@ case_circle:
     call imp_msg
     mov bx,[respuesta]
     call imprimir_resp
-    jmp done
+    jmp repetir
