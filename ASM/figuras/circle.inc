@@ -1,32 +1,38 @@
-case_circle:
+section .data
+    pi_val db 0x00, 0x03, 0x0E
+    ask_radio db 0x0A,'Cuando mide el radio?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta para el cuadrado
 
-; Imprime mensaje de círculo y sale
+case_circle:
     mov ah, 09h  ; Función de MS-DOS para imprimir cadena
-    lea dx, [circle]  ; Carga la dirección del mensaje de círculo en dx
+    lea dx, [ask_radio]  ; Carga la dirección del mensaje de consulta del lado del cuadrado en dx
     int 21h  ; Interrupción de MS-DOS para imprimir cadena
 
-    mov ax,7AA7H
-    mov bl,61h
-    mov [dato_01],ax
-    mov [dato_01+2],bl
-    mov ax,270fh
-    mov bl, 63h
-    mov [dato_02],ax
-    mov [dato_02+2],bl
+    call lectura ;para leer la entrada del usuario
+    ;contador para los bytes del buffer
+    mov si,0
+    ;cantidad de caracteres ingresados en el buffer
+    mov cx,[buffer_text+1]
+    mov ch,0
+    ;buffer donde se va a guardar el numero leido
+    mov bx, dato_01
+    call procesar_entero
 
+    ;mov AH,[dato_01]
+    ;mov AL,[dato_01+1]
+    ;mov BH,[dato_01+2]
+    ;mov BL,[pi_val]
+    ;mov ch,[pi_val+1]
+    ;mov CL,[pi_val+2]
+    ;INT 3
+    
     mov word [operando1],dato_01
-    mov word [operando2],dato_02
+    mov word [operando2],pi_val
     mov word [respuesta],peri_r
     
     Call multiplicacion
 
-    ; //  DEBUG  //
-    MOV AH,[peri_r]
-    MOV AL,[peri_r+1]
-    MOV BH,[peri_r+2]
-    MOV BL,[peri_r+3]
-    MOV CH,[peri_r+4]
-    INT 3
-
+    mov bx,result_peri
+    call imp_msg
     mov bx,[respuesta]
     call imprimir_resp
+    jmp done

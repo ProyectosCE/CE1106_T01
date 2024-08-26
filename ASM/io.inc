@@ -13,6 +13,8 @@ procesar_entero:
     inc si
     cmp dl,'.'
     je fin_procesar_entero
+    cmp dl,','
+    je fin_procesar_entero
     sub dl, '0'
     call add_digit_entero
     loop procesar_entero
@@ -25,6 +27,18 @@ procesar_decimal:
     inc si
     call add_digit_decimal
     loop procesar_decimal
+    jmp verificar_decimal
+
+verificar_decimal:
+    mov al, [bx+2]
+    cmp al,10
+    jb decimal_xdiez
+    ret
+
+decimal_xdiez:
+    mov cl,10
+    mul cl
+    mov [bx+2],al
     ret
 
 fin_procesar_entero:
@@ -37,13 +51,15 @@ add_digit_entero:
     PUSH CX
     PUSH DX
     mov CX, 10
-    mov AX, [bx]
+    mov AH, [bx]
+    mov Al, [bx+1]
     mul CX
     POP DX
     add ax,dx
     cmp ax,9999
     ja error
-    mov [bx], AX
+    mov BYTE [bx], AH
+    mov BYTE [bX+1], AL
     POP CX
     ret
 

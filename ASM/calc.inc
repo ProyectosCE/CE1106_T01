@@ -5,43 +5,48 @@ multiplicacion:
 
     ; // MULTIPLICACION DE PARTE ENTERA-ENTERA
     mov bx,[operando1] 
-    mov ax,[bx]
+    mov AH,[bx]
+    mov AL,[bx+1]
     xor bx,bx
     mov bx, [operando2]
-    mov bx,[bx]
-    mul bx
+    mov CH,[bx]
+    mov CL,[bx+1]
+    mul CX
     ;guardar resultado
     mov bx,[respuesta]
     MOV [bx+3],AL
     MOV [bx+2],AH
     MOV [bX+1],dl
     MOV [bx],dh
-    ;VERIFICADO 24-08-24 23:53
+    ;VERIFICADO 24-08-24 23:53 por @alexmv235
+    ;REVERIFICADO 26-08-24 00:13 por @alexmv235
 
     ; // MULTIPLICACION DE PARTE ENTERA-DECIMAL
     mov bx,[operando1] 
-    mov ax,[bx]
+    mov AH,[bx]
+    mov AL,[bx+1]
     xor bx,bx
     mov bx, [operando2]
-    mov bx,[bx+2]
-    mul bx
-    mov cx,100
-    div cx
+    mov CH,0
+    mov CL,[bx+2]
+    mul CX
+    mov BX,100
+    div BX
     ;guardar resultado
     mov bx,[respuesta]
     add [bx+4],dl
     PUSH AX
     XOR AX,AX
     mov al,[bx+4]
-    div Cl
+    MOV CH,0
+    MOV CL,100
+    DIV CL
     MOV byte [bx+4],ah
     mov ch,al
     POP AX
     XOR DX,DX
-    add al,ch
-    MOV CL,[bx+3]
-    ADD CL,AL
-    MOV [BX+3],CL
+    ADD CH,AL
+    ADD BYTE [bx+3],CH
     ADC AH,0
     ADD [bx+2],AH
     ADC DL,0
@@ -49,23 +54,29 @@ multiplicacion:
     ADC DH,0
     ADD [bx],dh
     ;VERIFICADO 25-08-24 03:28
+    ;REVERIFICADO 26-08-24 00:35 por @alexmv235
     
     
     ; // MULTIPLICACION DE PARTE DECIMAL-ENTERA
-    mov bx,[operando1] 
-    mov ax,[bx+2]
+    mov bx,[operando1]
+    MOV AH,0 
+    mov AL,[bx+2]
     xor bx,bx
+    xor CX,CX
     MOV AH,0
     mov bx, [operando2]
-    mov bx,[bx]
-    mul bx
-    mov cx,100
-    div CX
+    mov CH,[bx]
+    mov CL,[bx+1]
+    mul CX
+    mov BX,100
+    div BX
     mov bx,[respuesta]
     add BYTE [bx+4],dl
     PUSH AX
     XOR AX,AX
     mov al,[bx+4]
+    MOV CX,0
+    MOV CL,100
     div CL
     mov byte [bx+4],ah
     mov ch,al
@@ -78,23 +89,27 @@ multiplicacion:
     ADD BYTE [bx+1],ch
     adc byte [bx],0
     ;VERIFICADO 25-08-24 03:28
+    ;REVERIFICADO 26-08-24 00:39 por @alexmv235
     
     ; // MULTIPLICACION DE PARTE DECIMAL-DECIMAL
     mov bx,[operando1] 
+    MOV AH,0
     mov al,[bx+2]
     xor bx,bx
-    MOV AH,0
     mov bx, [operando2]
-    mov bl,[bx+2]
-    mul bl
-    mov cx,100
-    div cl
+    MOV ch,0
+    mov CL,[bx+2]
+    mul CL
+    mov BX,100
+    div BL
     ;guardar resultado
     mov bx,[respuesta]
     add BYTE [bx+4],al
     XOR AX,AX
     mov al,[bx+4]
-    div cL
+    MOV CX,0
+    MOV CL,100
+    DIV CL
     mov byte [bx+4],ah
     MOV AH,0
     add BYTE [bx+3],AL
@@ -106,6 +121,7 @@ multiplicacion:
     ADC AH,0
     adc byte [bx],AH
     ;VERIFICADO 25-08-24 03:28
+    ;REVERIFICADO 26-08-24 00:46 por @alexmv235
     ;retorna
     ret
 
@@ -113,7 +129,10 @@ division:
     jmp done
 
 cinco_to_tres:
-    mov byte [buftemp],[bx+2]
-    mov byte [buftemp+1],[bx+3]
-    mov byte [buftemp+2],[bx+4]
+    mov ah,[bx+2]
+    mov byte [buftemp],ah
+    mov ah,[bx+3]
+    mov byte [buftemp+1],ah
+    mov ah,[bx+4]
+    mov byte [buftemp+2],ah
     ret

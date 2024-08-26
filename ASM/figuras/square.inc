@@ -1,6 +1,6 @@
 case_square:
     mov ah, 09h  ; Función de MS-DOS para imprimir cadena
-    lea dx, [square_msg]  ; Carga la dirección del mensaje de consulta del lado del cuadrado en dx
+    lea dx, [ask_lado]  ; Carga la dirección del mensaje de consulta del lado del cuadrado en dx
     int 21h  ; Interrupción de MS-DOS para imprimir cadena
 
     call lectura ;para leer la entrada del usuario
@@ -13,6 +13,10 @@ case_square:
     mov bx, dato_01
     call procesar_entero
 
+    mov ah,[dato_01]
+    mov al,[dato_01+1]
+    mov bh,[dato_01+2]
+    INT 3
     ;OPERACIONES PROPIAS DEL CUADRADO:
     mov ax,4h
     mov [buftemp],ax

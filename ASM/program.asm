@@ -2,7 +2,7 @@ org 100h
 
 section .data
     default_ms db 'Otras cosas', 0x09,'',0x0D, 0x0A, '$'  ; Mensaje por defecto
-    initial_msg db 'Quieres iniciar [Y/N]',0x09,'', 0x0D, 0x0A, '$'  ; Mensaje inicial que pregunta si se desea iniciar
+    initial_msg db 'Bienvenido a GeometryTec',0x09,'', 0x0D, 0x0A, '$'  ; Mensaje inicial que pregunta si se desea iniciar
     askn_msg db 0x0A,'Escoge una figura:',0x09,'', 0x0D, 0x0A, '$'  ; Mensaje que pide al usuario que escoja una figura
     square db 0x0A,'1. Square',0x09,'', 0x0D, 0x0A, '$'  ; Opción para cuadrado
     circle db '2. Circle',0x09,'', 0x0D, 0x0A, '$'  ; Opción para círculo
@@ -12,8 +12,9 @@ section .data
     hexagon db '6. Hexagon',0x09,'', 0x0D, 0x0A, '$'  ; Opción para hexágono
     trapeze db '7. Trapeze',0x09,'', 0x0D, 0x0A, '$'  ; Opción para trapecio
     parallelogram db '8. Parallelogram',0x09,'', 0x0D, 0x0A, '$'  ; Opción para paralelogramo
-    square_msg db 0x0A,'Cuando mide el lado?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta para el cuadrado
-    result_peri db 0x0A, 'el perimetro es: ',0x09,'', 0x0D, 0x0A, '$' 
+    ask_lado db 0x0A,'Cuando mide el lado?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta cuanto mide el lado
+    result_peri db 0x0A, 'el perimetro es: ',0x09,'', '$' 
+    result_area db 0x0A, 'el area es: ',0x09,'', '$'
 
 section .bss   
     ;buffer general de entrada de texto (reutilizable)
@@ -47,16 +48,13 @@ initial_case:
     mov ah, 09h  
     lea dx, [initial_msg]  
     int 21h  
-    ; Leer respuesta del usuario (Y/N)
-    mov ah, 01h  
-    int 21h  
-    cmp al, 'Y'  ; Compara la entrada con 'Y' (mayúscula)
-    je case_show_figures  ; Si es 'Y', salta a mostrar las figuras
-    cmp al, 'N'  ; Compara la entrada con 'N' (mayúscula)
-    je done  ; Si es 'N', termina el programa
-    jmp default_case  ; Si no es ni 'Y' ni 'N', salta al caso por defecto
+    jmp case_show_figures
 
 case_show_figures:
+    ; Pregunta qué figura quiere el usuario
+    lea dx, [askn_msg]  
+    mov ah, 09h  
+    int 21h 
     ; Imprime las opciones de figuras disponibles
     mov ah, 09h 
     lea dx, [square]
@@ -83,11 +81,6 @@ case_show_figures:
     lea dx, [parallelogram]  
     int 21h  
 
-    ; Pregunta qué figura quiere el usuario
-    lea dx, [askn_msg]  
-    mov ah, 09h  
-    int 21h 
-
     ; Leer elección del usuario (1-8)
     mov ah, 01h  
     int 21h 
@@ -108,7 +101,6 @@ default_case:
 done:
     ; Termina el programa y vuelve a MS-DOS
     mov ah, 4Ch  ; Función de MS-DOS para terminar el programa
-    INT 3
     int 21h  ; Interrupción de MS-DOS para salir
 
 
