@@ -111,8 +111,9 @@ multiplicacion:
 
 division:
     jmp done
-    
+
 cinco_to_tres:
     mov byte [buftemp],[bx+2]
     mov byte [buftemp+1],[bx+3]
+    mov byte [buftemp+2],[bx+4]
     ret
