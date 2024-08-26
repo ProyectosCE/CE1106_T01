@@ -1,20 +1,27 @@
 org 100h
 
 section .data
-    default_ms db 'Otras cosas', 0x09,'',0x0D, 0x0A, '$'  ; Mensaje por defecto
-    initial_msg db 'Bienvenido a GeometryTec',0x09,'', 0x0D, 0x0A, '$'  ; Mensaje inicial que pregunta si se desea iniciar
-    askn_msg db 0x0A,'Escoge una figura:',0x09,'', 0x0D, 0x0A, '$'  ; Mensaje que pide al usuario que escoja una figura
-    square db 0x0A,'1. Square',0x09,'', 0x0D, 0x0A, '$'  ; Opción para cuadrado
-    circle db '2. Circle',0x09,'', 0x0D, 0x0A, '$'  ; Opción para círculo
-    triangle db '3. Triangle',0x09,'', 0x0D, 0x0A, '$'  ; Opción para triángulo
-    diamond db '4. Diamond',0x09,'', 0x0D, 0x0A, '$'  ; Opción para diamante
-    pentagon db '5. Pentagon',0x09,'', 0x0D, 0x0A, '$'  ; Opción para pentágono
-    hexagon db '6. Hexagon',0x09,'', 0x0D, 0x0A, '$'  ; Opción para hexágono
-    trapeze db '7. Trapeze',0x09,'', 0x0D, 0x0A, '$'  ; Opción para trapecio
-    parallelogram db '8. Parallelogram',0x09,'', 0x0D, 0x0A, '$'  ; Opción para paralelogramo
-    ask_lado db 0x0A,'Cuando mide el lado?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta cuanto mide el lado
+    default_ms db 'Otras cosas',0x0D, 0x0A, '$'  ; Mensaje por defecto
+    initial_msg db 'Bienvenido a GeometryTEC',0x0D, 0x0A, '$'  ; Mensaje inicial que pregunta si se desea iniciar
+    askn_msg db 0x0A,'Escoge una figura:', 0x0D, 0x0A, '$'  ; Mensaje que pide al usuario que escoja una figura
+
+    square db 0x0A,'1. Square',0x0D, 0x0A, '$'  ; Opción para cuadrado
+    circle db '2. Circle',0x0D, 0x0A, '$'  ; Opción para círculo
+    triangle db '3. Triangle',0x0D, 0x0A, '$'  ; Opción para triángulo
+    diamond db '4. Diamond',0x0D, 0x0A, '$'  ; Opción para diamante
+    pentagon db '5. Pentagon',0x0D, 0x0A, '$'  ; Opción para pentágono
+    hexagon db '6. Hexagon',0x0D, 0x0A, '$'  ; Opción para hexágono
+    trapeze db '7. Trapeze',0x0D, 0x0A, '$'  ; Opción para trapecio
+    parallelogram db '8. Parallelogram',0x0D, 0x0A, '$'  ; Opción para paralelogramo
+    ask_lado db 0x0A,'Cuando mide el lado?',0x0D, 0x0A, '$'  ; Pregunta cuanto mide el lado
     result_peri db 0x0A, 'el perimetro es: ','$' 
     result_area db 0x0A, 'el area es: ', '$'
+
+    repetir_msg db 0x0A,'Por favor presione:',0x0A, '$'  ; Mensaje que pide al usuario repetir o no
+    repsi db '1. Hacer otra operacion', 0x0D, 0x0A, '$'
+    repno db '2. Salir', 0x0D, 0x0A, '$'
+
+    salida_msg db 0x0A,'Gracias por usar GeometryTEC:', 0x0D, 0x0A, '$' 
 
 section .bss   
     ;buffer general de entrada de texto (reutilizable)
@@ -57,7 +64,6 @@ case_show_figures:
     mov ah, 09h  
     int 21h 
     ; Imprime las opciones de figuras disponibles
-    mov ah, 09h 
     lea dx, [square]
     int 21h 
 
@@ -89,7 +95,7 @@ case_show_figures:
     je case_square  
     cmp al, '2'  
     je case_circle 
-    jmp done 
+    jmp case_show_figures 
 
 
 default_case:
@@ -99,8 +105,31 @@ default_case:
     int 21h  ; Interrupción de MS-DOS para imprimir cadena
     jmp initial_case  ; Salta a terminar el programa
 
+repetir:
+    ; Mensaje por defecto en caso de entrada inválida
+    lea dx, [repetir_msg]  
+    mov ah, 09h  
+    int 21h 
+    ; Imprime las opciones de figuras disponibles
+    lea dx, [repsi]
+    int 21h 
+
+    lea dx, [repno]  
+    int 21h 
+    
+    mov ah, 01h  
+    int 21h 
+    cmp al, '1'  
+    je case_show_figures  
+    cmp al, '2'  
+    je done 
+    jmp repetir
+
+
 done:
-    ; Termina el programa y vuelve a MS-DOS
+    lea dx, [salida_msg]  
+    mov ah, 09h  
+    int 21h 
     mov ah, 4Ch  ; Función de MS-DOS para terminar el programa
     int 21h  ; Interrupción de MS-DOS para salir
 
