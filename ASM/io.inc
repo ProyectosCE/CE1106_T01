@@ -38,6 +38,7 @@ procesar_decimal:
 
 fin_procesar_entero:
     MOV cx, 2
+    ; Previene ingreso de decimales de solo 1 digito 
     call procesar_decimal
     ret
 
