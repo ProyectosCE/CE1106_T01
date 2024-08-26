@@ -13,8 +13,8 @@ section .data
     trapeze db '7. Trapeze',0x09,'', 0x0D, 0x0A, '$'  ; Opción para trapecio
     parallelogram db '8. Parallelogram',0x09,'', 0x0D, 0x0A, '$'  ; Opción para paralelogramo
     ask_lado db 0x0A,'Cuando mide el lado?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta cuanto mide el lado
-    result_peri db 0x0A, 'el perimetro es: ',0x09,'', '$' 
-    result_area db 0x0A, 'el area es: ',0x09,'', '$'
+    result_peri db 0x0A, 'el perimetro es: ','$' 
+    result_area db 0x0A, 'el area es: ', '$'
 
 section .bss   
     ;buffer general de entrada de texto (reutilizable)
