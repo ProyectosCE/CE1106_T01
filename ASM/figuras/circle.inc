@@ -19,23 +19,7 @@ case_circle:
     mov bx, dato_01
     call procesar_entero
 
-    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
-    lea dx, [ask_altura]  ; Carga la dirección del mensaje de consulta del lado del cuadrado en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
-
-    mov si, buffer_text
-    mov cx, 10
-    call clear_loop
-    call lectura ;para leer la entrada del usuario
-    ;contador para los bytes del buffer
-    mov si,0
-    ;cantidad de caracteres ingresados en el buffer
-    mov cx,[buffer_text+1]
-    mov ch,0
-    ;buffer donde se va a guardar el numero leido
-    mov bx, dato_02
-    call procesar_entero
-
+    ;para uso de las funciones de calc.inc
     mov word [operando1],dato_01
     mov word [operando2],pi_val
     mov word [respuesta],temp_r
