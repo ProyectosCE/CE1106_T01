@@ -16,15 +16,7 @@ case_circle:
     ;buffer donde se va a guardar el numero leido
     mov bx, dato_01
     call procesar_entero
-
-    ;mov AH,[dato_01]
-    ;mov AL,[dato_01+1]
-    ;mov BH,[dato_01+2]
-    ;mov BL,[pi_val]
-    ;mov ch,[pi_val+1]
-    ;mov CL,[pi_val+2]
-    ;INT 3
-    
+       
     mov word [operando1],dato_01
     mov word [operando2],pi_val
     mov word [respuesta],peri_r

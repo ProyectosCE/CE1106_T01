@@ -12,14 +12,11 @@ case_square:
     ;buffer donde se va a guardar el numero leido
     mov bx, dato_01
     call procesar_entero
-
-    mov ah,[dato_01]
-    mov al,[dato_01+1]
-    mov bh,[dato_01+2]
-    INT 3
+    
     ;OPERACIONES PROPIAS DEL CUADRADO:
     mov ax,4h
-    mov [buftemp],ax
+    mov [buftemp],ah
+    mov [buftemp+1],al
     mov byte [buftemp+2],00
 
     mov word [operando1],dato_01
