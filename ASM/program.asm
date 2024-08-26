@@ -28,7 +28,7 @@ section .bss
     operando2 resb 2
     respuesta resb 2
 
-    buftest resb 3
+    buftemp resb 3
 
     ;Buffers para respuestas, de 5 bytes
     ; 4 bytes max para la parte entera

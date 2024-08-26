@@ -23,13 +23,9 @@ case_square:
     mov word [respuesta],peri_r
     
     call multiplicacion
-    
-    ; //  DEBUG  //
-    MOV AH,[peri_r]
-    MOV AL,[peri_r+1]
-    MOV BH,[peri_r+2]
-    MOV BL,[peri_r+3]
-    MOV CH,[peri_r+4]
-    INT 3
+    mov bx,result_peri
+    call imp_msg
+    mov bx,[respuesta]
+    call imprimir_resp
 
     JMP done

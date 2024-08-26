@@ -145,3 +145,15 @@ print_loop:
                 ; Repetir si aún hay valores en la pila
 done_imp:
     ret
+
+new_line:
+    xor dx,dx
+    mov dl,10
+    mov ah, 02h               ; Función DOS para imprimir un carácter
+    int 21h
+    ret
+imp_msg
+    mov ah, 09h
+    lea dx,[bx]
+    int 21h
+    ret
