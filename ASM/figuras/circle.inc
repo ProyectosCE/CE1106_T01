@@ -21,18 +21,8 @@ case_circle:
     mov word [operando1],dato_01
     mov word [operando2],pi_val
     mov word [respuesta],temp_r
-
-    Call multiplicacion
-
-    mov AH,[temp_r]
-    mov AL,[temp_r+1]
-    mov BH,[temp_r+2]
-    mov BL,[temp_r+3]
-    mov ch,[temp_r+4]
-
-    INT 3
     
-   
+    Call multiplicacion
 
     mov bx,[respuesta]
     call cinco_to_tres
@@ -42,6 +32,17 @@ case_circle:
     
     call multiplicacion
     mov bx,result_peri
+    call imp_msg
+    mov bx,[respuesta]
+    call imprimir_resp
+
+    mov word [operando1],dato_01
+    mov word [operando2],buftemp
+    mov word [respuesta],area_r
+
+    call multiplicacion
+
+    mov bx,result_area
     call imp_msg
     mov bx,[respuesta]
     call imprimir_resp
