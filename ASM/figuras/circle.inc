@@ -1,5 +1,10 @@
 case_circle:
 
+; Imprime mensaje de círculo y sale
+    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
+    lea dx, [circle]  ; Carga la dirección del mensaje de círculo en dx
+    int 21h  ; Interrupción de MS-DOS para imprimir cadena
+
     mov ax,7AA7H
     mov bl,61h
     mov [dato_01],ax
@@ -14,7 +19,7 @@ case_circle:
     mov word [respuesta],peri_r
     
     Call multiplicacion
-    
+
     ; //  DEBUG  //
     MOV AH,[peri_r]
     MOV AL,[peri_r+1]
@@ -22,8 +27,6 @@ case_circle:
     MOV BL,[peri_r+3]
     MOV CH,[peri_r+4]
     INT 3
-    ; Imprime mensaje de círculo y sale
-    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
-    lea dx, [circle]  ; Carga la dirección del mensaje de círculo en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
-    jmp done  ; Salta a terminar el programa
+
+    mov bx,[respuesta]
+    call imprimir_resp

@@ -24,9 +24,6 @@ case_square:
     
     call multiplicacion
     
-    
-    
-    
     ; //  DEBUG  //
     MOV AH,[peri_r]
     MOV AL,[peri_r+1]
@@ -34,3 +31,5 @@ case_square:
     MOV BL,[peri_r+3]
     MOV CH,[peri_r+4]
     INT 3
+
+    JMP done

@@ -67,46 +67,81 @@ check_digit:
 
 check_point:
     cmp dl, '.'             ; Comparar con el carácter punto '.'
-    jne error                ; Si no es un punto, es un error
+    jne check_comma                ; Si no es un punto, es un error
     ret                      ; Retornar de la subrutina
-       ; Llamar a la rutina de manejo de errores
+    
+check_comma:
+    cmp dl, ','
+    jne error
+    ret   
+    
+; Llamar a la rutina de manejo de errores
 error:
     JMP done 
 
 ;basado el el codigo del usuario de stackoverflow @rcgldr 
 ;recuperado de https://stackoverflow.com/a/41501934/26912080
+
+imprimir_resp:
+    xor dx,dx
+    mov dl,'$'
+    push dx
+    mov dl, 10
+    push dx
+    jmp decimal_pila
+    
+decimal_pila:
+    mov ah,0
+    mov al,[bx+4]
+    mov cl, 10
+    div cl
+    xor dx,dx
+    mov dl, ah
+    add dl,'0'
+    push dx
+    mov dl, al
+    add dl, '0'
+    push dx
+    mov al,','
+    mov dl,al
+    push dx
+    jmp convert_entero
+
 convert_entero:
     ; Cargar la parte más significativa 
-    mov ax, [peri_r]              ; Cargar los primeros 2 bytes (parte más significativa)
-    mov bx, [peri_r+2]
-    int 3            ; Cargar los últimos 2 bytes (parte menos significativa)
-    or ax, bx                 ; Realizar una operación lógica OR para verificar si ambos son 0
+    mov ax, [bx]              ; Cargar los primeros 2 bytes (parte más significativa)
+    mov cx, [bx+2]           ; Cargar los últimos 2 bytes (parte menos significativa)
+    or ax, cx                ; Realizar una operación lógica OR para verificar si ambos son 0
     jz print_loop         ; Si ambos son 0, saltar a imprimir los resultados
-
     ; Si no son 0, continuar la división
-    mov ax, [peri_r]
+    mov ah, [bx]
+    mov al, [bx+1]
     xor dx, dx                ; Limpiar DX antes de la división
     mov cx, 10                ; Divisor (decimal)
-    div cx                    ; Dividir DX:AX por 10, AX = cociente, DX = residuo
-
+    div cx           ; Dividir DX:AX por 10, AX = cociente, DX = residuo
     ; Almacenar el cociente y residuo
-    mov [peri_r], ax              ; Guardar el cociente en los primeros 2 bytes de peri_r                   ; Guardar el residuo en la pila
-
+    mov [bx], ah              ; Guardar el cociente en los primeros 2 bytes de               
+    mov [bx+1], al
     ; Repetir con la parte menos significativa
-    mov ax, [peri_r+2]            ; Cargar los bytes menos significativos en AX                ; Limpiar DX antes de la división
+    mov ah, [bx+2]
+    mov al, [bx+3]       ; Cargar los bytes menos significativos en AX
     div cx                    ; Dividir DX:AX por 10
 
     ; Almacenar el cociente y residuo
-    mov [peri_r+2], ax            ; Guardar el cociente en los últimos 2 bytes de peri_r
+    mov [bx+2], ah   ; Guardar el cociente en los últimos 2 bytes
+    mov [bx+3], al
+    add dl,'0'          
     push dx                   ; Guardar el residuo en la pila
 
     jmp convert_entero         ; Repetir el ciclo
 
 print_loop:
     pop dx
-    int 3                    ; Sacar el residuo de la pila
-    add dl, '0'               ; Convertir el residuo a carácter ASCII
+    cmp dl, '$'            ; Verificar si la pila está vacía (valor inicial de SP en DOS)
+    je done_imp                ; Sacar el residuo de la pila               ; Convertir el residuo a carácter ASCII
     mov ah, 02h               ; Función DOS para imprimir un carácter
     int 21h                   ; Imprimir el carácter
-    cmp sp, 0xFFFE            ; Verificar si la pila está vacía (valor inicial de SP en DOS)
-    jne print_loop            ; Repetir si aún hay valores en la pila
+    jmp print_loop  
+                ; Repetir si aún hay valores en la pila
+done_imp:
+    ret
