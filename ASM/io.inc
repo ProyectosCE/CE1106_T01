@@ -42,7 +42,7 @@ decimal_xdiez:
     ret
 
 fin_procesar_entero:
-    dec cx
+    MOV cx, 2
     call procesar_decimal
     ret
 
