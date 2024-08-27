@@ -8,7 +8,7 @@ case_pentagon:
     ;Metodo para los cálculos propios del círculo
 
     ;Imprime la pregunta de cuanto mide el radio
-    mov bx, [ask_lado]
+    mov bx, ask_lado
     call imp_msg
    
     ;Limpia el buffer del texto

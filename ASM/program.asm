@@ -17,7 +17,8 @@ section .data
     pentagon db 0x0A, '5. Pentagono', '$'  
     hexagon db 0x0A, '6. Hexagono', '$'  
     trapeze db 0x0A, '7. Trapecio','$'  
-    parallelogram db 0x0A, '8. Paralelogramo',0x0A,'$' 
+    parallelogram db 0x0A, '8. Paralelogramo','$'
+    exit_msg db 0x0A, '0. Cerrar programa',0x0A,'$'  
 
     ;Pregunta de lados
     ask_lado db 0x0A, 'Cuanto mide el lado?',0x0A, '$' 
@@ -107,7 +108,10 @@ case_show_figures:
     lea dx, [parallelogram]  
     int 21h  
 
-    ; Leer elección del usuario (1-8)
+    lea dx, [exit_msg]  
+    int 21h  
+
+    ; Leer elección del usuario (0-8)
     mov ah, 01h  
     int 21h 
     cmp al, '1'  
@@ -118,6 +122,13 @@ case_show_figures:
     je case_diamond
     cmp al, '5'
     je case_pentagon
+    cmp al, '6'
+    je case_hexagon
+
+
+
+    cmp al, '0'
+    je done
 
 
     ;si el digito ingresado no es válido vuelve a preguntar que figura quiere calcular
@@ -233,3 +244,4 @@ done:
 %include 'figuras/circle.inc'
 %include 'figuras/diamond.inc'
 %include 'figuras/pentagon.inc'
+%include 'figuras/hexagon.inc'

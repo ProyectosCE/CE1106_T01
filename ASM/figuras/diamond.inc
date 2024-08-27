@@ -10,7 +10,7 @@ case_diamond:
     ;Metodo para los cálculos propios del diamante
 
     ;Imprime la pregunta de cuanto mide la Diagonal mayor
-    mov bx, [ask_D]
+    mov bx, ask_D
     call imp_msg
    
     ;Limpia el buffer del texto
@@ -32,7 +32,7 @@ case_diamond:
     call procesar_entero
 
     ;Imprime la pregunta de cuanto mide la Diagonal menor
-    mov bx, [ask_D]
+    mov bx, ask_d
     call imp_msg
 
     ;Limpia el buffer del texto
@@ -54,7 +54,7 @@ case_diamond:
     call procesar_entero
 
     ;Imprime la pregunta de cuanto mide la Diagonal menor
-    mov bx, [ask_lado]
+    mov bx, ask_lado
     call imp_msg
 
     ;Limpia el buffer del texto

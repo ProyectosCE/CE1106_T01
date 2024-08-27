@@ -9,7 +9,7 @@ case_circle:
     ;Metodo para los cálculos propios del círculo
 
     ;Imprime la pregunta de cuanto mide el radio
-    mov bx, [ask_radio]
+    mov bx, ask_radio
     call imp_msg
    
     ;Se prepara para leer la entrada del usuario
