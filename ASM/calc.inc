@@ -208,11 +208,11 @@ suma:
 
     ;Carga los operandos, ahora en AX el operando1 y en CX el operando2
     mov bx,[operando1] 
-    mov AL,[BX]
-    mov AL,[bx+2]
+    mov AH,[BX]
+    mov AL,[bx+1]
     mov bx, [operando2]
     mov CH,[bx]
-    mov CL,[bx+2]
+    mov CL,[bx+1]
 
     ;suma ax,dx, resultado en AX, valor máximo de suma 65535
     ADD AX,CX

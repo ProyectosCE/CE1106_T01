@@ -119,6 +119,10 @@ case_show_figures:
     cmp al, '5'
     je case_pentagon
 
+    ; PRUEBA
+    cmp al, '9'
+    je case_suma
+
     ;si el digito ingresado no es válido vuelve a preguntar que figura quiere calcular
     jmp case_show_figures 
 
@@ -132,13 +136,13 @@ default_case:
 
 repetir:
     ; Mensaje pora preguntar si quiere repetir o no
-    mob bx, repetir_msg
+    mov bx, repetir_msg
     call imp_msg
     
-    mob bx, repsi
+    mov bx, repsi
     call imp_msg
 
-    mob bx, repno
+    mov bx, repno
     call imp_msg
     
     ;comprueba la entrada del usuario (1 o 2)
@@ -232,3 +236,4 @@ done:
 %include 'figuras/circle.inc'
 %include 'figuras/diamond.inc'
 %include 'figuras/pentagon.inc'
+%include 'pruebasum.inc'
