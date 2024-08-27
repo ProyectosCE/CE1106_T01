@@ -17,13 +17,17 @@ section .data
     pentagon db 0x0A, '5. Pentagono', '$'  
     hexagon db 0x0A, '6. Hexagono', '$'  
     trapeze db 0x0A, '7. Trapecio','$'  
-    parallelogram db 0x0A, '8. Paralelogramo',0x0A,'$' 
+    parallelogram db 0x0A, '8. Paralelogramo','$' 
+    rectangle db 0x0A, '9. Rectangulo',0x0A,'$' 
 
     ;Pregunta de lados
     ask_lado db 0x0A, 'Cuanto mide el lado?',0x0A, '$' 
+    ask_l1 db 0x0A, 'Cuanto mide el lado 1?',0x0A, '$'
+    ask_l2 db 0x0A, 'Cuanto mide el lado 2?',0x0A, '$'
+    ask_h db 0x0A, 'Cuanto mide la altura?',0x0A, '$'
     
     ;Respuestas de perimetro y área
-    result_peri db 0x0A, 'El perametro es: ', '$'
+    result_peri db 0x0A, 'El perimetro es: ', '$'
     result_area db 0x0A, 'El area es: ', '$'
 
     ; Mensaje de para consultar si quiere hacer otro calculo
@@ -43,6 +47,8 @@ section .bss
     dato_01 resb 3 ;dato Numerico para input 1
     dato_02 resb 3 ;dato Numerico para input 2
     dato_03 resb 3 ;dato Numerico para input 3
+    dato_04 resb 3 ;dato Numerico para input 4
+    dato_05 resb 3 ;dato Numerico para input 5
     
     ;Buffer a usar en operaciones matematicas (guardar direcciones de los buffers)
     operando1 resb 2
@@ -51,6 +57,8 @@ section .bss
 
     ;Buffer numerico de 3 bytes multiproposito
     buftemp resb 3
+    buftemp2 resb 3
+    buftemp3 resb 3
 
     ;Buffers para respuestas, de 5 bytes
     ; 4 bytes max para la parte entera
@@ -107,6 +115,9 @@ case_show_figures:
     lea dx, [parallelogram]  
     int 21h  
 
+    lea dx, [rectangle]  
+    int 21h  
+
     ; Leer elección del usuario (1-8)
     mov ah, 01h  
     int 21h 
@@ -114,10 +125,22 @@ case_show_figures:
     je case_square  
     cmp al, '2'  
     je case_circle 
+    cmp al, '3'
+    je case_triangle
     cmp al, '4'
     je case_diamond
     cmp al, '5'
     je case_pentagon
+    cmp al, '6'
+    je case_hexagon
+    cmp al, '7'
+    je case_trapeze
+    cmp al, '8'
+    je case_parallelogram
+    cmp al, '9'
+    je case_rectangle
+
+
 
 
     ;si el digito ingresado no es válido vuelve a preguntar que figura quiere calcular
@@ -172,8 +195,24 @@ reinciar_buf:
     mov si, dato_03
     mov cx, 3
     call clear_loop
+
+    mov si, dato_04
+    mov cx, 3
+    call clear_loop
+
+    mov si, dato_05
+    mov cx, 3
+    call clear_loop
     
     mov si, buftemp
+    mov cx, 3
+    call clear_loop
+
+    mov si, buftemp2
+    mov cx, 3
+    call clear_loop
+
+    mov si, buftemp3
     mov cx, 3
     call clear_loop
 
@@ -233,3 +272,9 @@ done:
 %include 'figuras/circle.inc'
 %include 'figuras/diamond.inc'
 %include 'figuras/pentagon.inc'
+%include 'figuras/trapeze.inc'
+%include 'figuras/rectangle.inc'
+%include 'figuras/parallelogram.inc'
+%include 'figuras/hexagon.inc'
+%include 'figuras/triangle.inc'
+%include 'pruebasum.inc'

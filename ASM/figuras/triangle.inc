@@ -1,7 +1,15 @@
-case_square:
+section .data
+    triangle_var db 0x00, 0x00, 0x57 ; 0,67 = \frac{raiz(3)}{2}
+
+
+case_triangle:
     mov ah, 09h  ; Función de MS-DOS para imprimir cadena
-    lea dx, [ask_lado]  ; Carga la dirección del mensaje de consulta del lado del cuadrado en dx
+    lea dx, [ask_l1]  ; Carga la dirección del mensaje de consulta del Diagonal Mayor en dx
     int 21h  ; Interrupción de MS-DOS para imprimir cadena
+
+    mov si, buffer_text+1
+    mov cx, 9
+    call clear_loop
 
     call lectura ;para leer la entrada del usuario
     ;contador para los bytes del buffer
@@ -12,9 +20,9 @@ case_square:
     ;buffer donde se va a guardar el numero leido
     mov bx, dato_01
     call procesar_entero
-    
-    ;OPERACIONES PROPIAS DEL CUADRADO:
-    mov ax,4h
+
+    ;calculo de perimetro
+    mov ax,3h
     mov [buftemp],ah
     mov [buftemp+1],al
     mov byte [buftemp+2],00
@@ -29,9 +37,20 @@ case_square:
     mov bx,[respuesta]
     call imprimir_resp
 
+
     ;Calculo de area
     mov word [operando1],dato_01
-    mov word [operando2],dato_01
+    mov word [operando2],triangle_var
+    mov word [respuesta],temp_r
+
+    call multiplicacion
+
+    mov bx,[respuesta]
+
+    call cinco_to_tres
+
+    mov word [operando1],dato_01
+    mov word [operando2],buftemp
     mov word [respuesta],area_r
 
     call multiplicacion
@@ -40,5 +59,4 @@ case_square:
     call imp_msg
     mov bx,[respuesta]
     call imprimir_resp
-
-    JMP repetir
+    jmp repetir

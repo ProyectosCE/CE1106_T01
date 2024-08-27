@@ -5,6 +5,11 @@ section .data
 
 case_pentagon:
 
+    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
+    lea dx, [ask_l1]  ; Carga la dirección del mensaje de consulta del Diagonal Mayor en dx
+    int 21h  ; Interrupción de MS-DOS para imprimir cadena
+
+
     ;Metodo para los cálculos propios del círculo
 
     ;Imprime la pregunta de cuanto mide el radio
