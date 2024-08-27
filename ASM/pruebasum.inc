@@ -13,5 +13,8 @@ case_suma:
     
     mov bx,result_suma
     call imp_msg
+
     mov bx,[respuesta]
+    call tres_to_cinco
+    mov bx,temp_r
     call imprimir_resp

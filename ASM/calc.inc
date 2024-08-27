@@ -253,7 +253,7 @@ tres_to_cinco:
     ;Almacena en los 3 ultimos bytes de temp_r los valores de las posiciones 1,2 y 3 del buffer de entrada respectivamente.
     
     ;primeros dos bytes en 0
-    mov byte [temp_r],ah
+    mov byte [temp_r],0
     mov byte [temp_r+1],0
     
     ;ultimos 3 bytes con datos del buffer de entrada
