@@ -97,6 +97,9 @@ case_show_figures:
     je case_square  
     cmp al, '2'  
     je case_circle 
+
+    cmp al, '4'
+    je case_diamond
     jmp case_show_figures 
 
 
@@ -193,3 +196,4 @@ done:
 %include 'calc.inc'
 %include 'figuras/square.inc'
 %include 'figuras/circle.inc'
+%include 'figuras/diamond.inc'
