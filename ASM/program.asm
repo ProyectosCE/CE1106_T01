@@ -119,9 +119,6 @@ case_show_figures:
     cmp al, '5'
     je case_pentagon
 
-    ; PRUEBA
-    cmp al, '9'
-    je case_suma
 
     ;si el digito ingresado no es válido vuelve a preguntar que figura quiere calcular
     jmp case_show_figures 
@@ -236,4 +233,3 @@ done:
 %include 'figuras/circle.inc'
 %include 'figuras/diamond.inc'
 %include 'figuras/pentagon.inc'
-%include 'pruebasum.inc'
