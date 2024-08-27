@@ -167,7 +167,7 @@ new_line:
     mov ah, 02h               ; Función DOS para imprimir un carácter
     int 21h
     ret
-imp_msg
+imp_msg:
     mov ah, 09h
     lea dx,[bx]
     int 21h

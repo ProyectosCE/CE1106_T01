@@ -97,8 +97,10 @@ case_show_figures:
     je case_square  
     cmp al, '2'  
     je case_circle 
-    cmp al, '5'  
-    je case_pentagon 
+    cmp al, '4'
+    je case_diamond
+    cmp al, '5'
+    je case_pentagon
     jmp case_show_figures 
 
 
@@ -172,6 +174,8 @@ reinciar_buf:
     mov cx, 2
     call clear_loop
 
+    xor al, al
+
     ret
 
 clear_loop:
@@ -195,4 +199,5 @@ done:
 %include 'calc.inc'
 %include 'figuras/square.inc'
 %include 'figuras/circle.inc'
+%include 'figuras/diamond.inc'
 %include 'figuras/pentagon.inc'
