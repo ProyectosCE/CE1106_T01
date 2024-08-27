@@ -6,16 +6,16 @@ section .data
     askn_msg db 0x0A, 'Escoge una figura:', 0x0D, 0x0A, '$'  ; Mensaje que pide al usuario que escoja una figura
 
     square db 0x0A, '1. Cuadrado', 0x0D, 0x0A, '$'  ; Opción para cuadrado
-    circle db '2. Círculo', 0x0D, 0x0A, '$'  ; Opción para círculo
-    triangle db '3. Triángulo', 0x0D, 0x0A, '$'  ; Opción para triángulo
+    circle db '2. Circulo', 0x0D, 0x0A, '$'  ; Opción para círculo
+    triangle db '3. Triangulo', 0x0D, 0x0A, '$'  ; Opción para triángulo
     diamond db '4. Diamante', 0x0D, 0x0A, '$'  ; Opción para diamante
-    pentagon db '5. Pentágono', 0x0D, 0x0A, '$'  ; Opción para pentágono
-    hexagon db '6. Hexágono', 0x0D, 0x0A, '$'  ; Opción para hexágono
+    pentagon db '5. Pentagono', 0x0D, 0x0A, '$'  ; Opción para pentágono
+    hexagon db '6. Hexagono', 0x0D, 0x0A, '$'  ; Opción para hexágono
     trapeze db '7. Trapecio', 0x0D, 0x0A, '$'  ; Opción para trapecio
     parallelogram db '8. Paralelogramo', 0x0D, 0x0A, '$'  ; Opción para paralelogramo
 
-    ask_lado db 0x0A, '¿Cuánto mide el lado?', 0x0D, 0x0A, '$'  ; Pregunta cuanto mide el lado
-    result_peri db 0x0A, 'El perímetro es: ', '$'  ; Mensaje para el resultado del perímetro
+    ask_lado db 0x0A, '¿Cuanto mide el lado?', 0x0D, 0x0A, '$'  ; Pregunta cuanto mide el lado
+    result_peri db 0x0A, 'El perametro es: ', '$'  ; Mensaje para el resultado del perímetro
     result_area db 0x0A, 'El área es: ', '$'  ; Mensaje para el resultado del área
 
     repetir_msg db 0x0A, 'Por favor presione:', 0x0A, '$'  ; Mensaje que pide al usuario repetir o no
