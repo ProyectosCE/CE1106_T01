@@ -1,7 +1,7 @@
 section .data
     pi_val db 0x00, 0x03, 0x0E
     dos_val db 0x00, 0x02, 0x00
-    ask_radio db 0x0A,'Cuando mide el radio?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta para el radio
+    ask_radio db 0x0A,'Cuanto mide el radio?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta para el radio
 
 case_circle:
     mov ah, 09h  ; Función de MS-DOS para imprimir cadena
@@ -19,6 +19,7 @@ case_circle:
     call procesar_entero
 
     ;para uso de las funciones de calc.inc
+    ;calculo de perimetro
     mov word [operando1],dato_01
     mov word [operando2],pi_val
     mov word [respuesta],temp_r
@@ -37,6 +38,7 @@ case_circle:
     mov bx,[respuesta]
     call imprimir_resp
 
+    ;Calculo de area
     mov word [operando1],dato_01
     mov word [operando2],buftemp
     mov word [respuesta],area_r

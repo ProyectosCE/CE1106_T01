@@ -213,6 +213,7 @@ suma:
     mov bx, [operando2]
     mov CH,[bx]
     mov CL,[bx+1]
+    mov CL,[bx+1]
 
     ;suma ax,dx, resultado en AX, valor máximo de suma 65535
     ADD AX,CX
@@ -222,7 +223,6 @@ suma:
     MOV BX,[respuesta]
     MOV BYTE [BX+1],AL
     MOV BYTE [BX],AH
-
     ;Retorno
     ret
 
