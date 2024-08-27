@@ -80,7 +80,7 @@ case_diamond:
     ;Se prepara para llamar a multiplicacion, cargando el valor del lado, el valor 4
     ; y el buffer donde se va a guardar la respuesta
     mov word [operando1],dato_03
-    mov word [operando2],cuatro_lados
+    mov word [operando2],cuatro
     mov word [respuesta],peri_r
     call multiplicacion
     

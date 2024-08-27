@@ -34,7 +34,7 @@ case_pentagon:
     ;Se prepara para llamar a multiplicacion, cargando el valor de la medida del lado, el valor de 5
     ; y el buffer donde se va a guardar la respuesta
     mov word [operando1],dato_01
-    mov word [operando2],cinco_lados
+    mov word [operando2],cinco
     mov word [respuesta],peri_r
     call multiplicacion
     
