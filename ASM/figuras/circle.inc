@@ -2,7 +2,7 @@
 section .data
     pi_val db 0x00, 0x03, 0x0E
     dos_val db 0x00, 0x02, 0x00
-    ask_radio db 0x0A,'Cuando mide el radio?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta para el radio
+    ask_radio db 0x0A,'Cuanto mide el radio?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta para el radio
 
 case_circle:
 
@@ -52,9 +52,10 @@ case_circle:
     ;se convierte e imprime la respuesta obtenida en peri_r
     mov bx,[respuesta]
     call imprimir_resp
-    
+
     ;Calculo del area
     ;se prepara para otra multiplicación, ahora del valor almacenado en buftemp (r*pi) por el radio, se almacena la respuesta en area_r
+
     mov word [operando1],dato_01
     mov word [operando2],buftemp
     mov word [respuesta],area_r
