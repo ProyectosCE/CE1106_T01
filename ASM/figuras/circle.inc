@@ -26,6 +26,8 @@ case_circle:
     call procesar_entero
 
     ;para uso de las funciones de calc.inc
+
+    ;Calculo del perimetro
     ;Se prepara para llamar a multiplicacion, cargando el valor del radios, el valor de pi
     ; y el buffer donde se va a guardar la respuesta
     mov word [operando1],dato_01
@@ -50,7 +52,8 @@ case_circle:
     ;se convierte e imprime la respuesta obtenida en peri_r
     mov bx,[respuesta]
     call imprimir_resp
-
+    
+    ;Calculo del area
     ;se prepara para otra multiplicación, ahora del valor almacenado en buftemp (r*pi) por el radio, se almacena la respuesta en area_r
     mov word [operando1],dato_01
     mov word [operando2],buftemp
