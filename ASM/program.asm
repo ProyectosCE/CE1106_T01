@@ -1,114 +1,283 @@
-org 100h
+[bits 16]
 
+;Seccion de datos predefinidos
 section .data
-    default_ms db 'Otras cosas', 0x09,'',0x0D, 0x0A, '$'  ; Mensaje por defecto
-    initial_msg db 'Quieres iniciar [Y/N]',0x09,'', 0x0D, 0x0A, '$'  ; Mensaje inicial que pregunta si se desea iniciar
-    askn_msg db 0x0A,'Escoge una figura:',0x09,'', 0x0D, 0x0A, '$'  ; Mensaje que pide al usuario que escoja una figura
-    square db 0x0A,'1. Square',0x09,'', 0x0D, 0x0A, '$'  ; Opción para cuadrado
-    circle db '2. Circle',0x09,'', 0x0D, 0x0A, '$'  ; Opción para círculo
-    triangle db '3. Triangle',0x09,'', 0x0D, 0x0A, '$'  ; Opción para triángulo
-    diamond db '4. Diamond',0x09,'', 0x0D, 0x0A, '$'  ; Opción para diamante
-    pentagon db '5. Pentagon',0x09,'', 0x0D, 0x0A, '$'  ; Opción para pentágono
-    hexagon db '6. Hexagon',0x09,'', 0x0D, 0x0A, '$'  ; Opción para hexágono
-    trapeze db '7. Trapeze',0x09,'', 0x0D, 0x0A, '$'  ; Opción para trapecio
-    parallelogram db '8. Parallelogram',0x09,'', 0x0D, 0x0A, '$'  ; Opción para paralelogramo
-    square_msg db 0x0A,'Cuando mide el lado?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta para el cuadrado
+    ;Mensaje general de pruebas
+    default_ms db 'Otras cosas', 0x0D, 0x0A, '$' 
 
-section .bss
-    input_buffer resb 2  ; Reserva 2 bytes para la primera entrada del usuario
-    second_input resb 2  ; Reserva 2 bytes para la segunda entrada, donde se elige la figura
-    buffer_lado_square resb 100 ; Reserva 100 bytes para la medida del lado del cuadrado
+    ;Mensaje de bienvenida
+    initial_msg db 'Bienvenido a GeometryTEC', 0x0A, '$'
+    
+    ;Para pregunta se seleccion de figura
+    askn_msg db 0x0A, 'Escoge una figura:', '$' 
+    square db 0x0A, '1. Cuadrado', '$'  
+    circle db 0x0A, '2. Circulo', '$'  
+    triangle db 0x0A, '3. Triangulo','$'  
+    diamond db 0x0A, '4. Diamante', '$'  
+    pentagon db 0x0A, '5. Pentagono', '$'  
+    hexagon db 0x0A, '6. Hexagono', '$'  
+    trapeze db 0x0A, '7. Trapecio','$'  
+    parallelogram db 0x0A, '8. Paralelogramo','$' 
+    rectangle db 0x0A, '9. Rectangulo','$' 
+     exit_msg db 0x0A, '0. Cerrar programa',0x0A,'$'
 
+    ;Pregunta de lados
+    ask_lado db 0x0A, 'Cuanto mide el lado?',0x0A, '$' 
+    ask_l1 db 0x0A, 'Cuanto mide el lado 1?',0x0A, '$'
+    ask_l2 db 0x0A, 'Cuanto mide el lado 2?',0x0A, '$'
+    ask_h db 0x0A, 'Cuanto mide la altura?',0x0A, '$'
+    
+    ;Respuestas de perimetro y área
+    result_peri db 0x0A, 'El perimetro es: ', '$'
+    result_area db 0x0A, 'El area es: ', '$'
+
+    ; Mensaje de para consultar si quiere hacer otro calculo
+    repetir_msg db 0x0A, 'Por favor presione:', '$'
+    repsi db 0x0A,'1. Hacer otra operacion','$' 
+    repno db 0x0A,'2. Salir',0x0A,'$'
+
+    ;Mensaje de agradecimiento
+    salida_msg db 0x0A, 'Gracias por usar GeometryTEC:','$'  ; Mensaje de salida
+
+;Seccion de buffer usados en todo el programa para el almacenamiento de valores y datos
+section .bss   
+    ;buffer general de entrada de texto (reutilizable)
+    buffer_text resb 10 ; maxima entrada del input (7 máx y 2 bytes de control)
+    
+    ;buffer para datos numericos (hasta 3 para las figuras que lo ocupan)
+    dato_01 resb 3 ;dato Numerico para input 1
+    dato_02 resb 3 ;dato Numerico para input 2
+    dato_03 resb 3 ;dato Numerico para input 3
+    dato_04 resb 3 ;dato Numerico para input 4
+    dato_05 resb 3 ;dato Numerico para input 5
+    
+    ;Buffer a usar en operaciones matematicas (guardar direcciones de los buffers)
+    operando1 resb 2
+    operando2 resb 2
+    respuesta resb 2
+
+    ;Buffer numerico de 3 bytes multiproposito
+    buftemp resb 3
+    buftemp2 resb 3
+    buftemp3 resb 3
+
+    ;Buffers para respuestas, de 5 bytes
+    ; 4 bytes max para la parte entera
+    ; 1 byte para la parte decimal
+    peri_r resb 5 
+    area_r resb 5
+    temp_r resb 5
+    
+; Seccion de texto propia de asm 8086
 section .text
-    global _start  ; Declaración global del punto de entrada
+    ;ORG 100h facilita al compilador saber que el codigo es ASM 8086 para DOS
+    org 100h
+    ; Declaración global del punto de entrada
+    global _start 
 
 _start:
-    jmp initial_case  ; Salta a la sección que pregunta si desea iniciar
+    ; Salta a la sección que imprime el mensaje de bienvenida
+    jmp initial_case  
 
 initial_case:
-    ; Imprime el mensaje inicial preguntando si quiere iniciar
-    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
-    lea dx, [initial_msg]  ; Carga la dirección del mensaje inicial en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
-
-    ; Leer respuesta del usuario (Y/N)
-    mov ah, 01h  ; Función de MS-DOS para leer un solo carácter del teclado
-    int 21h  ; Interrupción de MS-DOS para leer entrada
-    cmp al, 'Y'  ; Compara la entrada con 'Y' (mayúscula)
-    je case_show_figures  ; Si es 'Y', salta a mostrar las figuras
-    cmp al, 'N'  ; Compara la entrada con 'N' (mayúscula)
-    je done  ; Si es 'N', termina el programa
-    jmp default_case  ; Si no es ni 'Y' ni 'N', salta al caso por defecto
+    ; Imprime el mensaje inicial de bienvenida
+    mov bx, initial_msg
+    call imp_msg
+    jmp case_show_figures
 
 case_show_figures:
-    ; Imprime las opciones de figuras disponibles
-    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
-    lea dx, [square]  ; Carga la dirección del mensaje de cuadrado en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
-
-    lea dx, [circle]  ; Carga la dirección del mensaje de círculo en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
-
-    lea dx, [triangle]  ; Carga la dirección del mensaje de triángulo en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
-
-    lea dx, [diamond]  ; Carga la dirección del mensaje de diamante en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
-
-    lea dx, [pentagon]  ; Carga la dirección del mensaje de pentágono en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
-
-    lea dx, [hexagon]  ; Carga la dirección del mensaje de hexágono en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
-
-    lea dx, [trapeze]  ; Carga la dirección del mensaje de trapecio en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
-
-    lea dx, [parallelogram]  ; Carga la dirección del mensaje de paralelogramo en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
-
+    call reinciar_buf
     ; Pregunta qué figura quiere el usuario
-    lea dx, [askn_msg]  ; Carga la dirección del mensaje que pide seleccionar figura en dx
-    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
+    lea dx, [askn_msg]  
+    mov ah, 09h  
+    int 21h 
+    ; Imprime las opciones de figuras disponibles
+    lea dx, [square]
+    int 21h 
 
-    ; Leer elección del usuario (1-8)
-    mov ah, 01h  ; Función de MS-DOS para leer un solo carácter del teclado
-    int 21h  ; Interrupción de MS-DOS para leer entrada
-    cmp al, '1'  ; Compara la entrada con '1'
-    je case_square  ; Si es '1', salta al caso del cuadrado
-    cmp al, '2'  ; Compara la entrada con '2'
-    je case_circle  ; Si es '2', salta al caso del círculo
-    jmp done  ; Si no es ninguna de las opciones válidas, termina el programa
+    lea dx, [circle]  
+    int 21h 
 
-case_square:
-    ; Pregunta sobre el lado del cuadrado
-    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
-    lea dx, [square_msg]  ; Carga la dirección del mensaje de consulta del lado del cuadrado en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
+    lea dx, [triangle]  
+    int 21h  
 
-    ; Leer el lado del cuadrado (suponiendo una entrada numérica)
-    mov ah, 01h  ; Función de MS-DOS para leer cadena
-    lea dx, [buffer_lado_square]  ; Carga la dirección del buffer donde se almacenará la entrada del lado del cuadrado
-    int 21h  ; Interrupción de MS-DOS para leer cadena
-    ; Aquí podrías hacer cálculos con la entrada obtenida
-    jmp done  ; Salta a terminar el programa
+    lea dx, [diamond]  
+    int 21h  
 
-case_circle:
-    ; Imprime mensaje de círculo y sale
-    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
-    lea dx, [circle]  ; Carga la dirección del mensaje de círculo en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
-    jmp done  ; Salta a terminar el programa
+    lea dx, [pentagon] 
+    int 21h  
+
+    lea dx, [hexagon]  
+    int 21h  
+
+    lea dx, [trapeze]  
+    int 21h  
+
+    lea dx, [parallelogram]  
+    int 21h  
+    
+    lea dx, [rectangle]  
+    int 21h 
+
+    lea dx, [exit_msg]  
+    int 21h  
+
+
+    mov ah, 01h  
+    int 21h 
+    cmp al, '1'  
+    je case_square  
+    cmp al, '2'  
+    je case_circle 
+    cmp al, '3'
+    je case_triangle
+    cmp al, '4'
+    je case_diamond
+    cmp al, '5'
+    je case_pentagon
+    cmp al, '6'
+    je case_hexagon
+    cmp al, '7'
+    je case_trapeze
+    cmp al, '8'
+    je case_parallelogram
+    cmp al, '9'
+    je case_rectangle
+    cmp al, '0'
+    je done
+
+
+    ;si el digito ingresado no es válido vuelve a preguntar que figura quiere calcular
+    jmp case_show_figures 
+
 
 default_case:
     ; Mensaje por defecto en caso de entrada inválida
-    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
-    lea dx, [default_ms]  ; Carga la dirección del mensaje por defecto en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
-    jmp done  ; Salta a terminar el programa
+    mov bx, default_ms
+    call imp_msg
+    ; Salta a imprimir el listado de figuras
+    jmp case_show_figures
+
+repetir:
+    ; Mensaje pora preguntar si quiere repetir o no
+    mov bx, repetir_msg
+    call imp_msg
+    
+    mov bx, repsi
+    call imp_msg
+
+    mov bx, repno
+    call imp_msg
+    
+    ;comprueba la entrada del usuario (1 o 2)
+    ;1 para continuar con otro calculo
+    ;2 para salir
+    mov ah, 01h  
+    int 21h 
+    cmp al, '1'  
+    je case_show_figures  
+    cmp al, '2'  
+    je done 
+
+    ; en caso de una entrada diferente se vuelve a preguntar si desea repetir
+    jmp repetir
+
+reinciar_buf:
+    ; Este metodo se llama para limpiar todo los buffers disponibles en una sola llamada
+    mov si, buffer_text+1
+    mov cx, 9
+    call clear_loop
+    
+    mov si, dato_01
+    mov cx, 3
+    call clear_loop
+    
+    mov si, dato_02
+    mov cx, 3
+    call clear_loop
+
+    mov si, dato_03
+    mov cx, 3
+    call clear_loop
+
+    mov si, dato_04
+    mov cx, 3
+    call clear_loop
+
+    mov si, dato_05
+    mov cx, 3
+    call clear_loop
+    
+    mov si, buftemp
+    mov cx, 3
+    call clear_loop
+
+    mov si, buftemp2
+    mov cx, 3
+    call clear_loop
+
+    mov si, buftemp3
+    mov cx, 3
+    call clear_loop
+
+    mov si, peri_r
+    mov cx, 5
+    call clear_loop
+
+    mov si, area_r
+    mov cx, 5
+    call clear_loop
+
+    mov si, temp_r
+    mov cx, 5
+    call clear_loop
+
+    mov si, operando1
+    mov cx, 2
+    call clear_loop
+    mov si, operando2
+    mov cx, 2
+    call clear_loop
+    mov si, respuesta
+    mov cx, 2
+    call clear_loop
+    
+    ;retorno
+    ret
+
+clear_loop:
+    ; Entradas: Recibe en si el valor de la dirección del buffer que se desea limpiar, además en CX recibe el tamaño del buffer
+    ; Salidas: Limpia el buffer indicado y coloca 0 en todos sus registros
+    ; Restricciones: Se necesita especificar tanto la dirección del buffer como su tamaño. Puede limpiar buffers de tamaño n
+    
+    ; Escribir 0 en la posición actual del buffer
+    xor al, al
+    mov [si], al            
+    
+    ; Incrementa si para avanzar al siguiente byte en el buffer
+    inc si    
+    ; Se repite hasta que CX sea 0              
+    loop clear_loop         
+    ; Retorna
+    ret
+
 
 done:
-    ; Termina el programa y vuelve a MS-DOS
+    lea dx, [salida_msg]  
+    mov ah, 09h  
+    int 21h 
     mov ah, 4Ch  ; Función de MS-DOS para terminar el programa
     int 21h  ; Interrupción de MS-DOS para salir
+
+
+%include 'io.inc'
+%include 'calc.inc'
+%include 'figuras/square.inc'
+%include 'figuras/circle.inc'
+%include 'figuras/diamond.inc'
+%include 'figuras/pentagon.inc'
+%include 'figuras/trapeze.inc'
+%include 'figuras/rectangle.inc'
+%include 'figuras/parallelogram.inc'
+%include 'figuras/hexagon.inc'
+%include 'figuras/triangle.inc'
