@@ -56,10 +56,14 @@ procesar_decimal:
     ; en CX se recibe el valor de 2 y si sirve para el desplazamiento en el buffer continuacion del metodo de procesar entero.
     ; Salidas: Guarda la parte decimal de la entrada del usuario en el ultimo byte de dato_n
     ; Restricciones: Propias del método, solo acepta caracteres numéricos. Comas o puntos no son validos en este caso.
-    ; Además NO acepta entradas de un solo digito decimal. 
+    ; Ahora si acepta entradas de un solo digito decimal. 
 
     ; Mueve a dl el digito a leer
     mov dl, [buffer_text+si+2]
+
+    ;comprobar si encontró retorno de carro, ya que sería un decimal de solo un dígito como 1.1
+    cmp dl, 0x0D
+    je decimal_deuno
     ;verifica que el dígito es un caracter válido
     call check_digit
     
@@ -80,12 +84,17 @@ procesar_decimal:
     ;Retorno
     ret
 
+decimal_deuno:
+    ;Corrige el ingreso de decimales de solo 1 digito, añadiendo el 0 como ultimo decimal
+    mov dl,0
+    jmp add_digit_decimal
+
 fin_procesar_entero:
     ;Se llama cuando en procesar_entero se encuentra un punto o coma
     ;Establece CX en un valor fijo de 2
     ;Llama a procesar decimal para seguir procesando la entrada del usuario
 
-    ;Previene ingreso de decimales de solo 1 digito, ya que al leer 2 bytes leería el retorno de carro
+    
     MOV cx, 2
     
     ;llama a procesar decimal para procesar los valores faltantes
