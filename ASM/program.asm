@@ -14,7 +14,7 @@ section .data
     trapeze db '7. Trapecio', 0x0D, 0x0A, '$'  ; Opción para trapecio
     parallelogram db '8. Paralelogramo', 0x0D, 0x0A, '$'  ; Opción para paralelogramo
 
-    ask_lado db 0x0A, '¿Cuanto mide el lado?', 0x0D, 0x0A, '$'  ; Pregunta cuanto mide el lado
+    ask_lado db 0x0A, 'Cuanto mide el lado?', 0x0D, 0x0A, '$'  ; Pregunta cuanto mide el lado
     result_peri db 0x0A, 'El perametro es: ', '$'  ; Mensaje para el resultado del perímetro
     result_area db 0x0A, 'El área es: ', '$'  ; Mensaje para el resultado del área
 
@@ -97,6 +97,8 @@ case_show_figures:
     je case_square  
     cmp al, '2'  
     je case_circle 
+    cmp al, '5'  
+    je case_pentagon 
     jmp case_show_figures 
 
 
@@ -193,3 +195,4 @@ done:
 %include 'calc.inc'
 %include 'figuras/square.inc'
 %include 'figuras/circle.inc'
+%include 'figuras/pentagon.inc'
