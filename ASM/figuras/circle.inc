@@ -17,7 +17,7 @@ case_circle:
     
     ;Se prepara para procesar la cadena ingresada a un numero
     ;CX tiene la cantidad de caracteres ingresados en el buffer
-    ;BX almacena la direccion del buffer donde se va a guardar el numero leido, buffer dato_n
+    ;BX almacena la direccion del buffer donde se va a guardar el numero leido, buffer dato_1
     ;llama al metodo de procesamiento del número
     mov si,0
     mov cx,[buffer_text+1]
