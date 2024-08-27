@@ -129,6 +129,50 @@ multiplicacion:
 division:
     jmp done
 
+; Entradas: direccion del Operando1 (3 bytes), direccion del Operando2 (3 bytes), direccion del buffer de respuesta (3 bytes)
+; Salidas: Almacena en el buffer de respuesta el resultado (max 3 bytes)
+; Restricciones: Los operandos y la respuesta tiene que ser de 3 bytes
+suma:
+    ;cargar a los registros los operandos para decimales, AL para Operando1 y CL para Operando2
+    mov bx,[operando1] 
+    mov AH,0
+    mov AL,[bx+2]
+    xor bx,bx
+    mov bx, [operando2]
+    mov CH,0
+    mov CL,[bx+2]
+
+    ;suma los dos decimales, valor máximo a obtener 198
+    ADD AL,CL
+    ;prepa cl para dividir el valor de AL entre 100, lo que quede en AH se guarda en la respuesta decimal, lo que quede en AL se pasa al numero entero
+    MOV CL,100
+    DIV CL
+
+    ;Guarda la respuesta decimal
+    MOV BX, [respuesta]
+    MOV BYTE [BX+2],AH
+    ;guarda en DL el carry (1 o 0)
+    MOV DH,0
+    MOV DL,AL
+
+    ;Carga los operandos, ahora en AX el operando1 y en CX el operando2
+    mov bx,[operando1] 
+    mov AL,[BX]
+    mov AL,[bx+2]
+    mov bx, [operando2]
+    mov CH,[bx]
+    mov CL,[bx+2]
+
+    ;suma ax,dx, resultado en AX, valor máximo de suma 65535
+    ADD AX,CX
+    ADD AX,DX
+
+    ;Guarda la rspuesta en los primeros 2 bytes del buffer de respuesta
+    MOV BX,[respuesta]
+    MOV BYTE [BX+1],AL
+    MOV BYTE [BX],AH
+
+
 cinco_to_tres:
     mov ah,[bx+2]
     mov byte [buftemp],ah
