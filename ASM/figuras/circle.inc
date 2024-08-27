@@ -1,7 +1,6 @@
 ;Seccion con constantes necesarias para el cálculo del área y perimetro del circulo, como el valor 2 o el valor de pi
 section .data
     pi_val db 0x00, 0x03, 0x0E
-    dos_val db 0x00, 0x02, 0x00
     ask_radio db 0x0A,'Cuanto mide el radio?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta para el radio
 
 case_circle:
@@ -41,7 +40,7 @@ case_circle:
 
     ;Se prepara para otra multiplicacion, ahora para multiplicar por 2 el valor obtenido de la respuesta anterior y procesado a 3 bytes
     ; la respuesta se almacena en peri_r
-    mov word [operando1],dos_val
+    mov word [operando1],dos
     mov word [operando2],buftemp
     mov word [respuesta],peri_r
     call multiplicacion

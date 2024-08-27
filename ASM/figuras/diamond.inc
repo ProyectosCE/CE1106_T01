@@ -1,9 +1,9 @@
 ;Seccion con constantes necesarias para el cálculo del área y perimetro del diamante, como el valor de 1/2
 section .data
-    un_medio_val db 0x00, 0x00, 0x32
+    un_medio db 0x00, 0x00, 0x32
     ask_D db 0x0A,'Cuanto mide Diagonal Mayor?',0x09,'', 0x0D, 0x0A, '$'  
     ask_d db 0x0A, 'Cuanto mide diagonal menor?',0x09,'', 0x0D, 0x0A, '$'
-    cuatro_lados db 0x00, 0x04, 0x00
+    cuatro db 0x00, 0x04, 0x00
 
 
 case_diamond:
@@ -96,7 +96,7 @@ case_diamond:
     ;Se prepara para llamar a multiplicacion, cargando el valor de la Diagonal Mayor, el valor de 1/2
     ; y el buffer donde se va a guardar la respuesta                                                                                    
     mov word [operando1],dato_01
-    mov word [operando2],un_medio_val
+    mov word [operando2],un_medio
     mov word [respuesta],temp_r
     call multiplicacion
 

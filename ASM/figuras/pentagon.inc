@@ -1,19 +1,13 @@
 ;Seccion con constantes necesarias para el cálculo del área y perimetro del pentagono, como el valor \frac{5}{8tan(36)}
 section .data
     var_penta db 0x00, 0x01, 0x48 ; 3,44 = \frac{5}{8tan(36)}
-    cinco_lados db 0x00, 0x05, 0x00
+    cinco db 0x00, 0x05, 0x00
 
 case_pentagon:
+    ;Metodo para los cálculos propios del pentagono
 
-    mov ah, 09h  ; Función de MS-DOS para imprimir cadena
-    lea dx, [ask_l1]  ; Carga la dirección del mensaje de consulta del Diagonal Mayor en dx
-    int 21h  ; Interrupción de MS-DOS para imprimir cadena
-
-
-    ;Metodo para los cálculos propios del círculo
-
-    ;Imprime la pregunta de cuanto mide el radio
-    mov bx, ask_lado
+    ;Imprime la pregunta de cuanto mide el lado
+    mov bx, ask_l1
     call imp_msg
    
     ;Limpia el buffer del texto
@@ -32,6 +26,7 @@ case_pentagon:
     mov cx,[buffer_text+1]
     mov ch,0
     mov bx, dato_01
+    call procesar_entero
 
 
     ;calculo de perimetro
