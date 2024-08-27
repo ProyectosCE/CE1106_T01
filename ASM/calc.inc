@@ -126,9 +126,6 @@ multiplicacion:
     ;retorna
     ret
 
-division:
-    jmp done
-
 ; Entradas: direccion del Operando1 (3 bytes), direccion del Operando2 (3 bytes), direccion del buffer de respuesta (3 bytes)
 ; Salidas: Almacena en el buffer de respuesta el resultado (max 3 bytes)
 ; Restricciones: Los operandos y la respuesta tiene que ser de 3 bytes
