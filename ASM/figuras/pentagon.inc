@@ -1,6 +1,6 @@
-;Seccion con constantes necesarias para el cálculo del área y perimetro del pentagono, como el valor \frac{5}{8tan(36)}
+;Seccion con constantes necesarias para el cálculo del área y perimetro del pentagono, como el valor 1.72
 section .data
-    var_penta db 0x00, 0x01, 0x48 ; 3,44 = \frac{5}{8tan(36)}
+    var_penta db 0x00, 0x01, 0x48 ; 1,72
     cinco db 0x00, 0x05, 0x00
 
 case_pentagon:

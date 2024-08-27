@@ -1,6 +1,6 @@
 ;Seccion con constantes necesarias para el cálculo del área y perimetro del triangulo
 section .data
-    triangle_var db 0x00, 0x00, 0x57 ; 0,67 = \frac{raiz(3)}{2}
+    triangle_var db 0x00, 0x00, 0x57 ; 0,87 = \frac{raiz(3)}{2}
     tres db 0x00, 0x03, 0x00
 
 case_triangle:

@@ -1,6 +1,6 @@
 ;Seccion con constantes necesarias para el cálculo del área y perimetro del hexagono, como el valor 2.60
 section .data
-    hexagon_var db 0x00, 0x02, 0x3C ; 2,30 = \frac{3raiz(3)}{2}
+    hexagon_var db 0x00, 0x02, 0x3C ; 2,60
     seis_lados db 0x00, 0x06, 0x00
 
 case_hexagon:

@@ -1,6 +1,6 @@
 ;Seccion con constantes necesarias para el cálculo del área y perimetro del diamante, como el valor de 1/2
 section .data
-    un_medio db 0x00, 0x00, 0x32
+    un_medio db 0x00, 0x00, 0x32 ;1/2
     ask_D db 0x0A,'Cuanto mide Diagonal Mayor?',0x09,'', 0x0D, 0x0A, '$'  
     ask_d db 0x0A, 'Cuanto mide diagonal menor?',0x09,'', 0x0D, 0x0A, '$'
     cuatro db 0x00, 0x04, 0x00
