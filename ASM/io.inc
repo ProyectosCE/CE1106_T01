@@ -213,7 +213,7 @@ decimal_pila:
 
     ;Lo divide entre 10, para obtener en AH el ultimo deciaml y en AL el primer decimal
     mov cl, 10
-    div cl+
+    div cl
 
     ;limpia DX para guardar AL y AH en la pila através de DL
     xor dx,dx
