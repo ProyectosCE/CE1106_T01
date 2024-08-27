@@ -243,3 +243,26 @@ cinco_to_tres:
     
     ;Retorno
     ret
+
+tres_to_cinco:
+    ; Entradas: direccion del Buffer de 3 Bytes que se quiere convertir a 5 Bytes (para impresión)
+    ; Salidas: Almacena en temp_r el resultado (max 5 bytes)
+    ; Restricciones: El buffer de entrada debe tener datos en la posición 1 y 2 para valores enteros
+    ; y en la posición 3 para valores decimales; y la respuesta tiene de salida es de 5 bytes
+
+    ;Almacena en los 3 ultimos bytes de temp_r los valores de las posiciones 1,2 y 3 del buffer de entrada respectivamente.
+    
+    ;primeros dos bytes en 0
+    mov byte [temp_r],ah
+    mov byte [temp_r+1],0
+    
+    ;ultimos 3 bytes con datos del buffer de entrada
+    mov ah,[bx]
+    mov byte [temp_r+2],ah
+    mov ah,[bx+1]
+    mov byte [temp_r+3],ah
+    mov ah,[bx+2]
+    mov byte [temp_r+4],ah
+    
+    ;Retorno
+    ret
