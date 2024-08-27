@@ -100,6 +100,10 @@ case_show_figures:
 
     cmp al, '4'
     je case_diamond
+
+    cmp al, '5'
+    je case_pentagon
+
     jmp case_show_figures 
 
 
@@ -131,7 +135,7 @@ repetir:
     jmp repetir
 
 reinciar_buf:
-    xor al, al
+    
     mov si, buffer_text+1
     mov cx, 9
     call clear_loop
@@ -174,6 +178,8 @@ reinciar_buf:
     mov cx, 2
     call clear_loop
 
+    xor al, al
+
     ret
 
 clear_loop:
@@ -197,3 +203,4 @@ done:
 %include 'figuras/square.inc'
 %include 'figuras/circle.inc'
 %include 'figuras/diamond.inc'
+%include 'figuras/pentagon.inc'

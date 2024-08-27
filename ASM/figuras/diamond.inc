@@ -1,5 +1,5 @@
 section .data
-    un_medio_val db 0x00, 0x00, 0x05
+    un_medio_val db 0x00, 0x00, 0x32
     ask_D db 0x0A,'Cuando mide Diagonal Mayor?',0x09,'', 0x0D, 0x0A, '$'  
     ask_d db 0x0A, 'Cuando mide diagonal menor?',0x09,'', 0x0D, 0x0A, '$'
 
@@ -8,6 +8,10 @@ case_diamond:
     mov ah, 09h  ; Función de MS-DOS para imprimir cadena
     lea dx, [ask_D]  ; Carga la dirección del mensaje de consulta del Diagonal Mayor en dx
     int 21h  ; Interrupción de MS-DOS para imprimir cadena
+
+    mov si, buffer_text+1
+    mov cx, 9
+    call clear_loop
 
     call lectura ;para leer la entrada del usuario
     ;contador para los bytes del buffer
@@ -25,6 +29,11 @@ case_diamond:
     lea dx, [ask_d]  ; Carga la dirección del mensaje de consulta del Diagonal Mayor en dx
     int 21h  ; Interrupción de MS-DOS para imprimir cadena
 
+
+    mov si, buffer_text+1
+    mov cx, 9
+    call clear_loop
+
     call lectura ;para leer la entrada del usuario
     ;contador para los bytes del buffer
     mov si,0
@@ -41,6 +50,10 @@ case_diamond:
     lea dx, [ask_lado]  ; Carga la dirección del mensaje de consulta del Diagonal Mayor en dx
     int 21h  ; Interrupción de MS-DOS para imprimir cadena
 
+    mov si, buffer_text+1
+    mov cx, 9
+    call clear_loop
+
     call lectura ;para leer la entrada del usuario
     ;contador para los bytes del buffer
     mov si,0
@@ -50,7 +63,7 @@ case_diamond:
     ;buffer donde se va a guardar el numero leido
     mov bx, dato_03
     call procesar_entero
-    
+
 
     ;calculo de perimetro
     mov ax,4h
@@ -71,7 +84,7 @@ case_diamond:
 
     ;Calculo de area
     mov word [operando1],dato_01
-    mov word [operando2],dato_02
+    mov word [operando2],un_medio_val
     mov word [respuesta],temp_r
 
     call multiplicacion
@@ -80,7 +93,7 @@ case_diamond:
 
     call cinco_to_tres
 
-    mov word [operando1],un_medio_val
+    mov word [operando1],dato_02
     mov word [operando2],buftemp
     mov word [respuesta],area_r
 
