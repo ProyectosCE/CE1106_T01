@@ -140,6 +140,9 @@ case_show_figures:
     cmp al, '9'
     je case_rectangle
 
+
+
+
     ;si el digito ingresado no es válido vuelve a preguntar que figura quiere calcular
     jmp case_show_figures 
 
