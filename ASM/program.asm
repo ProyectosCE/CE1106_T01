@@ -128,7 +128,6 @@ repetir:
     jmp repetir
 
 reinciar_buf:
-    xor al, al
     mov si, buffer_text+1
     mov cx, 9
     call clear_loop
@@ -174,6 +173,7 @@ reinciar_buf:
     ret
 
 clear_loop:
+    xor al, al
     mov [si], al            ; Escribir 0 en la posición actual del buffer
     inc si                  ; Avanzar al siguiente byte en el buffer
     loop clear_loop         ; Repetir hasta que CX sea 0
