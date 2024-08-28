@@ -1,3 +1,10 @@
+; MIT License
+; Copyright (c) 2024 José Bernardo Barquero Bonilla,
+;                    Jose Eduardo Campos Salazar,
+;                    Jimmy Feng Feng,
+;                    Alexander Montero Vargas
+; Consulta el archivo LICENSE para más detalles.
+
 ;Seccion con constantes necesarias para el cálculo del área y perimetro del circulo, como el valor 2 o el valor de pi
 section .data
     pi_val db 0x00, 0x03, 0x0E
