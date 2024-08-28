@@ -1,3 +1,10 @@
+; MIT License
+; Copyright (c) 2024 José Bernardo Barquero Bonilla,
+;                    Jose Eduardo Campos Salazar,
+;                    Jimmy Feng Feng,
+;                    Alexander Montero Vargas
+; Consulta el archivo LICENSE para más detalles.
+
 multiplicacion:
     ; Entradas: direccion del Operando1 (3 bytes), direccion del Operando2 (3 bytes), direccion del buffer de respuesta (5 bytes)
     ; Salidas: Almacena en el buffer de respuesta el resultado (max 5 bytes)
