@@ -1,5 +1,3 @@
-[bits 16]
-
 ; Sección de datos predefinidos
 section .data
 M1 db ' ', 0ah, 0dh
@@ -155,6 +153,12 @@ msgTitle: db ' --------------------------- ', 0ah, 0dh, 0ah, 0dh
 
 current_menu dw 1
 
+maingui:
+    mov al,2
+    mov byte [intselect],al
+    xor ax,ax
+    call print_menu 
+    jmp input
 
 print_menu:
     call clear_screen
@@ -250,19 +254,19 @@ input:
     je handle_buttonclick
     cmp ah, 32
     je done
-    jmp print_menu
+    jmp maingui
 
 down_pressed:
     cmp word [current_menu], 9  ; Verificar si está en el último menú
-    je print_menu
+    je maingui
     inc word [current_menu]     ; Incrementar menú
-    jmp print_menu
+    jmp maingui
  
 up_pressed:
     cmp word [current_menu], 1  ; Verificar si está en el primer menú
-    je print_menu
+    je maingui
     dec word [current_menu]     ; Decrementar menú
-    jmp print_menu
+    jmp maingui
 
 handle_buttonclick:
     mov ax, [current_menu]
@@ -290,63 +294,78 @@ b1c:
     mov dx, msg1
     mov ah, 9
     int 21h
-    jmp case_square
+    call case_square
+    jmp input
+
 
 b2c:
     call clear_screen
     mov dx, msg2
     mov ah, 9
     int 21h
-    jmp case_rectangle
+    call case_rectangle
+    jmp input
  
 b3c:
     call clear_screen
     mov dx, msg3
     mov ah, 9
     int 21h
-    jmp case_triangle
+    call case_triangle
+    jmp input
+
 
 b4c:
     call clear_screen
     mov dx, msg4
     mov ah, 9
     int 21h
-    jmp case_diamond
+    call case_diamond
+    jmp input
+
 
 b5c:
     call clear_screen
     mov dx, msg5
     mov ah, 9
     int 21h
-    jmp case_pentagon
+    call case_pentagon
+    jmp input
 
 b6c:
     call clear_screen
     mov dx, msg6
     mov ah, 9
     int 21h
-    jmp case_hexagon
+    call case_hexagon
+    jmp input
 
 b7c:
     call clear_screen
     mov dx, msg7
     mov ah, 9
     int 21h
-    jmp case_circle
+    call case_circle
+    jmp input
+
 
 b8c:
     call clear_screen
     mov dx, msg8
     mov ah, 9
     int 21h
-    jmp case_trapeze
+    call case_trapeze
+    jmp input
+
 
 b9c:
     call clear_screen
     mov dx, msg9
     mov ah, 9
     int 21h
-    jmp case_parallelogram
+    call case_parallelogram
+    jmp input
+
  
 end:
     mov ah, 4ch

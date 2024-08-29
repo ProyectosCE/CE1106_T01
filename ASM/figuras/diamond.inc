@@ -119,4 +119,4 @@ case_diamond:
     call imprimir_resp
 
     ;se llama a repetir para preguntar si quiere calcular otra figura
-    jmp input
+    ret
