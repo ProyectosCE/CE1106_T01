@@ -14,7 +14,6 @@ section .data
     default_ms db 'Otras cosas', 0x0D, 0x0A, '$' 
 
     ;Mensaje de bienvenida
-
     imsg1 db ' +----------------------------------------------------------------------------+', 0x0A, '$'
     imsg2 db ' |                       This program is under MIT License                    |', 0x0A, '$'
     imsg3 db ' |                              Copyright(c) 2024                             |', 0x0A, '$'
@@ -120,11 +119,6 @@ _start:
     jmp initial_case 
 
 initial_case:
-    ;Imprime noticia de Licencia
-
-    mov bx,licencia
-    call imp_msg
-
     ; Imprime el mensaje inicial de bienvenida
     mov bx,imsg1
     mov cl,0x1F

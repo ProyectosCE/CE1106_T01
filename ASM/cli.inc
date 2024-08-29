@@ -1,3 +1,11 @@
+; MIT License
+; Copyright (c) 2024 José Bernardo Barquero Bonilla,
+;                    Jose Eduardo Campos Salazar,
+;                    Jimmy Feng Feng,
+;                    Alexander Montero Vargas
+; Consulta el archivo LICENSE para más detalles.
+
+
 case_show_figures:
     mov al,1
     mov byte [intselect],al
@@ -51,7 +59,7 @@ case_show_figures:
     call color_msg
 
     mov bx, colorline
-    mov cl, 0x00
+    mov cl, 0x02
     call color_msg
 
     call entrada_fig

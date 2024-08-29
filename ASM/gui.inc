@@ -1,3 +1,11 @@
+; MIT License
+; Copyright (c) 2024 José Bernardo Barquero Bonilla,
+;                    Jose Eduardo Campos Salazar,
+;                    Jimmy Feng Feng,
+;                    Alexander Montero Vargas
+; Consulta el archivo LICENSE para más detalles.
+
+
 ; Sección de datos predefinidos
 section .data
 M1 db ' ', 0ah, 0dh
