@@ -5,7 +5,7 @@
 ;                    Alexander Montero Vargas
 ; Consulta el archivo LICENSE para más detalles.
 
-
+section .data
     error_dig db 0x0A,'Favor ingrese un numero valido (0-9999.99)', 0x0D, 0x0A, '$'
 
 lectura: 
