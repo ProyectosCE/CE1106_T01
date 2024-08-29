@@ -5,7 +5,11 @@
 ;                    Alexander Montero Vargas
 ; Consulta el archivo LICENSE para más detalles.
 
-section .data
+; En adelante para todo los archivos de código de este protecto, el uso de caracteres ASCII fue investigado
+; en documentación de International Business Machines (IBM)
+; url: https://www.ibm.com/docs/es/aix/7.1?topic=adapters-ascii-decimal-hexadecimal-octal-binary-conversion-table
+
+
     error_dig db 0x0A,'Favor ingrese un numero valido (0-9999.99)', 0x0D, 0x0A, '$'
 
 lectura: 
@@ -196,9 +200,15 @@ error:
     ;Imprime un mensaje de error
     mov bx, error_dig 
     call imp_msg
+    mov al, [intselect]
+
+    cmp al, 1 
+    je repetir 
+    cmp al, 2
+    je input
 
     ;Salta a repetir para preguntar si quiere hacer otro calculo
-    JMP repetir 
+    ret 
 
 
 ;SUBRUTINA DE IMPRMIR RESPUESTA
@@ -306,18 +316,59 @@ done_imp:
 
 new_line:
     ;Método para imprimir una nueva linea de ser necesario
-    xor dx,dx
-    mov dl,10
-    mov ah, 02h
+    lea dx, newline
+    mov ah, 09h
     int 21h
     ret
 
+color_msg:
+
+    ;En adelante y para todos los archivos de código de este proyecto,
+    ; todo el uso de colores fue inspirado en video del usuario de youtube gmendezm
+    ; en el video [ITCR TEC] 224- [ASM x86] Colores (gmendezm)
+    ;url: https://www.youtube.com/watch?v=ZS6dCR8LBA0
+
+    ; Entradas: En BX recibe el valor de la direccion de un buffer de texto, recibe el color en CL
+    ; Salidas: Imprime el buffer de texto a colores
+    ; Restricciones: El buffer debe terminar con el caracter de finalización "$"
+    
+    ;:guardamos los valores de bx y cx
+    push bx
+    push cx
+
+    ;Encontramos la posición del carro
+    mov ah, 03h
+    mov bx, 0         
+    int 10h
+    int 3 
+    
+    ;definimos el color de la linea donde se va a imprimir el texto
+    pop cx
+    mov ah,06h
+    mov bh,cl
+    mov ch,dh
+    mov cl,0
+    mov dh,ch
+    mov dl,80
+    int 10h
+
+    ;impresión normal de la cadena
+    pop bx
+    mov ah, 09h
+    lea dx,[bx]
+    int 21h
+
+    ;retorna
+    ret
+
 imp_msg:
+
     ; Entradas: En BX recibe el valor de la direccion de un buffer de texto
-    ; Salidas: Imprime el buffer de texto
+    ; Salidas: Imprime el buffer de texto a colores
     ; Restricciones: El buffer debe terminar con el caracter de finalización "$"
     mov ah, 09h
     lea dx,[bx]
     int 21h
+
     ;retorna
     ret

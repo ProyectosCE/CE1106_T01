@@ -8,10 +8,9 @@
 ;Seccion con constantes necesarias para el cálculo del área y perimetro del circulo, como el valor 2 o el valor de pi
 section .data
     pi_val db 0x00, 0x03, 0x0E
-    ask_radio db 0x0A,'Cuanto mide el radio?',0x09,'', 0x0D, 0x0A, '$'  ; Pregunta para el radio
+    ask_radio db 0x0A,'Cuanto mide el radio?',0x09,0x0A,'',  '$'  ; Pregunta para el radio
 
 case_circle:
-
     ;Metodo para los cálculos propios del círculo
 
     ;Imprime la pregunta de cuanto mide el radio
@@ -20,6 +19,7 @@ case_circle:
    
     ;Se prepara para leer la entrada del usuario
     call lectura
+    
     
     ;Se prepara para procesar la cadena ingresada a un numero
     ;CX tiene la cantidad de caracteres ingresados en el buffer
@@ -30,6 +30,7 @@ case_circle:
     mov ch,0
     mov bx, dato_01
     call procesar_entero
+    
 
     ;para uso de las funciones de calc.inc
 
@@ -59,6 +60,7 @@ case_circle:
     mov bx,[respuesta]
     call imprimir_resp
 
+
     ;Calculo del area
     ;se prepara para otra multiplicación, ahora del valor almacenado en buftemp (r*pi) por el radio, se almacena la respuesta en area_r
 
@@ -68,11 +70,12 @@ case_circle:
     call multiplicacion
 
     ;se imprime el mensaje "el area es"
-    mov bx,result_area
+   mov bx,result_area
     call imp_msg
     ;se convierte e imprime la respuesta obtenida almacenada en area_r
     mov bx,[respuesta]
     call imprimir_resp
 
+
     ;se llama a repetir para preguntar si quiere calcular otra figura
-    jmp repetir
+    ret

@@ -9,6 +9,7 @@ case_square:
     ;Metodo para los cálculos propios del Cuadrado
 
     ;Imprime la pregunta de cuanto mide el lado
+    
     mov bx, ask_l1
     call imp_msg
    
@@ -17,9 +18,8 @@ case_square:
     mov cx, 9
     call clear_loop
 
-   ;Se prepara para leer la entrada del usuario
     call lectura
-    
+   ;Se prepara para leer la entrada del usuario
     ;Se prepara para procesar la cadena ingresada a un numero
     ;CX tiene la cantidad de caracteres ingresados en el buffer
     ;BX almacena la direccion del buffer donde se va a guardar el numero leido, buffer dato_1
@@ -30,7 +30,7 @@ case_square:
     mov bx, dato_01
     call procesar_entero
     
-
+    call new_line 
     ;calculo de perimetro
     
     ;Se prepara para llamar a multiplicacion, cargando el valor de la medida del lado, el valor de 5
@@ -63,4 +63,4 @@ case_square:
     call imprimir_resp
 
     ;se llama a repetir para preguntar si quiere calcular otra figura
-    jmp repetir
+    ret

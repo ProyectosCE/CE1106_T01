@@ -5,6 +5,10 @@
 ;                    Alexander Montero Vargas
 ; Consulta el archivo LICENSE para más detalles.
 
+; En adelante para todos los archivos de código de ese proyecto, para el conocimiento
+; y manejo de las interrupciones para Ensamblador 8086
+; se consultó Tabla de interrupciones de Galeno, G., Gomez, J.
+; url: http://ebadillo_computacion.tripod.com/ensamblador/8086_int.pdf
 
 [bits 16]
 
@@ -14,20 +18,42 @@ section .data
     default_ms db 'Otras cosas', 0x0D, 0x0A, '$' 
 
     ;Mensaje de bienvenida
-    initial_msg db 0x0A, 'Bienvenido a GeometryTEC', 0x0A, '$'
-    
+    imsg1 db ' +----------------------------------------------------------------------------+', 0x0A, '$'
+    imsg2 db ' |                       This program is under MIT License                    |', 0x0A, '$'
+    imsg3 db ' |                              Copyright(c) 2024                             |', 0x0A, '$'
+    imsg4 db ' |                         Bienvenido a GeometryTEC                           |', 0x0A, '$'
+    imsg5 db ' +----------------------------------------------------------------------------+', 0x0A, 0x0A, '$'
+
+    gui_ask db ' Seleccione el modo de interfaz (A o B)',0x0A,0x0A,0x0A,'$'
+    esc_ask db ' Presione escape para salir',0x0A,0x0A,0x0A,'$'
+
+
+    ;selector de interfaz
+    line0 db '        Clasica CLI (Presione A)             Nueva Interfaz (Presione B)  ', 0x0A, 0x0A, '$'
+    line1 db '          +-------------------+                 +-------------------+', 0x0A, '$'
+    line2 db '          |                   |                 | +------+          |', 0x0A, '$'
+    line3 db '          |  Opcion 1         |                 | | - F  |          |', 0x0A, '$'
+    line4 db '          |  Opcion 2         |                 | | - C  |          |', 0x0A, '$'
+    line5 db '          |  Opcion 3         |                 | | - T  |          |', 0x0A, '$'
+    line6 db '          |  _                |                 | +------+          |', 0x0A, '$'
+    line7 db '          |                   |                 |                   |', 0x0A, '$'
+    line8 db '          +-------------------+                 +-------------------+', 0x0A, '$'
+
+
     ;Para pregunta se seleccion de figura
-    askn_msg db 0x0A, 'Escoge una figura:', '$' 
-    square db 0x0A, '1. Cuadrado', '$'  
-    circle db 0x0A, '2. Circulo', '$'  
-    triangle db 0x0A, '3. Triangulo','$'  
-    diamond db 0x0A, '4. Diamante', '$'  
-    pentagon db 0x0A, '5. Pentagono', '$'  
-    hexagon db 0x0A, '6. Hexagono', '$'  
-    trapeze db 0x0A, '7. Trapecio','$'  
-    parallelogram db 0x0A, '8. Paralelogramo','$' 
-    rectangle db 0x0A, '9. Rectangulo','$' 
-     exit_msg db 0x0A, '0. Cerrar programa',0x0A,'$'
+    askn_msg db 'Escoge una figura:',0X0A, '$' 
+    square db '1. Cuadrado', 0x0A, '$'  
+    circle db '2. Circulo', 0x0A, '$'  
+    triangle db '3. Triangulo', 0x0A, '$'  
+    diamond db '4. Diamante', 0x0A, '$'  
+    pentagon db '5. Pentagono', 0x0A, '$'  
+    hexagon db '6. Hexagono', 0x0A, '$'  
+    trapeze db '7. Trapecio', 0x0A, '$'  
+    parallelogram db '8. Paralelogramo', 0x0A, '$' 
+    rectangle db '9. Rectangulo', 0x0A, '$'  
+    exit_msg db  '0. Cerrar programa',0x0A,'$'
+
+    fig_selec db  'Se selecciono la figura: ',0x0A,'$'
 
     ;Pregunta de lados
     ask_lado db 0x0A, 'Cuanto mide el lado?',0x0A, '$' 
@@ -36,8 +62,8 @@ section .data
     ask_h db 0x0A, 'Cuanto mide la altura?',0x0A, '$'
     
     ;Respuestas de perimetro y área
-    result_peri db 0x0A, 'El perimetro es: ', '$'
-    result_area db 0x0A, 'El area es: ', '$'
+    result_peri db 0x0A,0x0A,'El perimetro es: ',0x0A, '$'
+    result_area db 0x0A,'El area es: ',0x0A, '$'
 
     ; Mensaje de para consultar si quiere hacer otro calculo
     repetir_msg db 0x0A, 'Por favor presione:', '$'
@@ -49,6 +75,9 @@ section .data
 
     ;MENSAJES DE LICENCIA
     licencia db 'This program is under MIT License, Copyright(c) 2024','$' 
+
+    colorline db ' ','$'
+    newline db 0x0A,'$'  
 
 ;Seccion de buffer usados en todo el programa para el almacenamiento de valores y datos
 section .bss   
@@ -78,6 +107,8 @@ section .bss
     peri_r resb 5 
     area_r resb 5
     temp_r resb 5
+
+    intselect resb 1
     
 ; Seccion de texto propia de asm 8086
 section .text
@@ -87,116 +118,100 @@ section .text
     global _start 
 
 _start:
-    ; Salta a la sección que imprime el mensaje de bienvenida
-    jmp initial_case  
+    call init_pantalla
+    call color_screen
+    jmp initial_case 
 
 initial_case:
-    ;Imprime noticia de Licencia
-
-    mov bx,licencia
-    call imp_msg
-
     ; Imprime el mensaje inicial de bienvenida
-    mov bx, initial_msg
-    call imp_msg
-    jmp case_show_figures
+    mov bx,imsg1
+    mov cl,0x1F
+    call color_msg
 
-case_show_figures:
-    call reinciar_buf
-    ; Pregunta qué figura quiere el usuario
-    lea dx, [askn_msg]  
-    mov ah, 09h  
-    int 21h 
-    ; Imprime las opciones de figuras disponibles
-    lea dx, [square]
-    int 21h 
+    mov bx,imsg2
+    mov cl,0x1F
+    call color_msg
 
-    lea dx, [circle]  
-    int 21h 
+    mov bx,imsg3
+    mov cl,0x1F
+    call color_msg
 
-    lea dx, [triangle]  
-    int 21h  
+    mov bx,imsg4
+    mov cl,0x1F
+    call color_msg
 
-    lea dx, [diamond]  
-    int 21h  
+    mov bx,imsg5
+    mov cl,0x1F
+    call color_msg
 
-    lea dx, [pentagon] 
-    int 21h  
+    mov bx,gui_ask
+    mov cl,0x71
+    call color_msg
 
-    lea dx, [hexagon]  
-    int 21h  
+; Imprimir cada línea de la del selector de la interfaz
+    mov bx, line0
+    mov cl, 0x70
+    call color_msg
 
-    lea dx, [trapeze]  
-    int 21h  
+    mov bx, line1
+    mov cl, 0x70
+    call color_msg
 
-    lea dx, [parallelogram]  
-    int 21h  
-    
-    lea dx, [rectangle]  
-    int 21h 
+    mov bx, line2
+    mov cl, 0x70
+    call color_msg
 
-    lea dx, [exit_msg]  
-    int 21h  
+    mov bx, line3
+    mov cl, 0x70
+    call color_msg
 
+    mov bx, line4
+    mov cl, 0x70
+    call color_msg
 
+    mov bx, line5
+    mov cl, 0x70
+    call color_msg
+
+    mov bx, line6
+    mov cl, 0x70
+    call color_msg
+
+    mov bx, line7
+    mov cl, 0x70
+    call color_msg
+
+    mov bx, line8
+    mov cl, 0x70
+    call color_msg
+    jmp new_gui_ask
+ 
+
+new_gui_ask:
+    mov al,0
     mov ah, 01h  
-    int 21h 
-    cmp al, '1'  
-    je case_square  
-    cmp al, '2'  
-    je case_circle 
-    cmp al, '3'
-    je case_triangle
-    cmp al, '4'
-    je case_diamond
-    cmp al, '5'
-    je case_pentagon
-    cmp al, '6'
-    je case_hexagon
-    cmp al, '7'
-    je case_trapeze
-    cmp al, '8'
-    je case_parallelogram
-    cmp al, '9'
-    je case_rectangle
-    cmp al, '0'
-    je done
+    int 21h
+    cmp al, 'B'  
+    je maingui 
+    cmp al, 'b'  
+    je maingui  
+    cmp al, 'A'  
+    je case_show_figures 
+    cmp al, 'a'  
+    je case_show_figures 
+    cmp al, 0x1B
+    je force_exit 
+    jmp new_gui_ask
 
-
-    ;si el digito ingresado no es válido vuelve a preguntar que figura quiere calcular
-    jmp case_show_figures 
 
 
 default_case:
     ; Mensaje por defecto en caso de entrada inválida
     mov bx, default_ms
-    call imp_msg
+    call color_msg
     ; Salta a imprimir el listado de figuras
     jmp case_show_figures
 
-repetir:
-    ; Mensaje pora preguntar si quiere repetir o no
-    mov bx, repetir_msg
-    call imp_msg
-    
-    mov bx, repsi
-    call imp_msg
-
-    mov bx, repno
-    call imp_msg
-    
-    ;comprueba la entrada del usuario (1 o 2)
-    ;1 para continuar con otro calculo
-    ;2 para salir
-    mov ah, 01h  
-    int 21h 
-    cmp al, '1'  
-    je case_show_figures  
-    cmp al, '2'  
-    je done 
-
-    ; en caso de una entrada diferente se vuelve a preguntar si desea repetir
-    jmp repetir
 
 reinciar_buf:
     ; Este metodo se llama para limpiar todo los buffers disponibles en una sola llamada
@@ -285,7 +300,38 @@ done:
     mov ah, 4Ch  ; Función de MS-DOS para terminar el programa
     int 21h  ; Interrupción de MS-DOS para salir
 
+force_exit:
+    mov ah, 4Ch  ; Función de MS-DOS para terminar el programa
+    int 21h 
 
+init_pantalla:
+    mov ah, 06h       
+    mov al, 0         
+    mov bh, 07h       
+    mov cx, 0        
+    mov dx, 184Fh     
+    int 10h           
+
+    ; Mover el cursor a la posición inicial (0, 0)
+    mov ah, 02h       
+    mov bh, 0         
+    mov dh, 0         
+    mov dl, 0         
+    int 10h 
+    ret     
+
+color_screen:
+    mov ah,06h
+    mov bh,0x77
+    mov ch,0
+    mov cl,0
+    mov dh,25
+    mov dl,80
+    int 10h
+    ret
+
+%include 'gui.inc'
+%include 'cli.inc'
 %include 'io.inc'
 %include 'calc.inc'
 %include 'figuras/square.inc'
