@@ -149,16 +149,12 @@ msg9: db 'Has seleccionado Paralelogramo.', 0ah, 0dh, 0ah, 0dh
     db ' /______//  ', 0ah, 0dh
     db '             ', 0ah, 0dh, 24h
 
-msgTitle: db 'Demo de GUI en MS-DOS', 0ah, 0dh, 24h
+msgTitle: db ' --------------------------- ', 0ah, 0dh, 0ah, 0dh
+          db '   [S] Entry, [<-] back, [D] exit, [A]  again ', 0ah, 0dh, 24h
+
 
 current_menu dw 1
 
-section .text
-    org 100h
-    global _start 
-
-_start:
-    jmp print_menu
 
 print_menu:
     call clear_screen
@@ -238,6 +234,7 @@ print_menu_9:
     jmp input
 
 input:
+    call reinciar_buf
     mov dx, msgTitle
     mov ah, 9
     int 21h
@@ -247,8 +244,12 @@ input:
     je down_pressed
     cmp ah, 48h   ; Tecla arriba
     je up_pressed
-    cmp ah, 31   ; Tecla Enter
+    cmp ah, 31   ; Tecla S
     je handle_buttonclick
+    cmp ah,30
+    je handle_buttonclick
+    cmp ah, 32
+    je done
     jmp print_menu
 
 down_pressed:
@@ -289,63 +290,63 @@ b1c:
     mov dx, msg1
     mov ah, 9
     int 21h
-    jmp input
+    jmp case_square
 
 b2c:
     call clear_screen
     mov dx, msg2
     mov ah, 9
     int 21h
-    jmp input
+    jmp case_rectangle
  
 b3c:
     call clear_screen
     mov dx, msg3
     mov ah, 9
     int 21h
-    jmp input
+    jmp case_triangle
 
 b4c:
     call clear_screen
     mov dx, msg4
     mov ah, 9
     int 21h
-    jmp input
+    jmp case_diamond
 
 b5c:
     call clear_screen
     mov dx, msg5
     mov ah, 9
     int 21h
-    jmp input
+    jmp case_pentagon
 
 b6c:
     call clear_screen
     mov dx, msg6
     mov ah, 9
     int 21h
-    jmp input
+    jmp case_hexagon
 
 b7c:
     call clear_screen
     mov dx, msg7
     mov ah, 9
     int 21h
-    jmp input
+    jmp case_circle
 
 b8c:
     call clear_screen
     mov dx, msg8
     mov ah, 9
     int 21h
-    jmp input
+    jmp case_trapeze
 
 b9c:
     call clear_screen
     mov dx, msg9
     mov ah, 9
     int 21h
-    jmp input
+    jmp case_parallelogram
  
 end:
     mov ah, 4ch

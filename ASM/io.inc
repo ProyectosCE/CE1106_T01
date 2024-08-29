@@ -191,7 +191,7 @@ error:
     call imp_msg
 
     ;Salta a repetir para preguntar si quiere hacer otro calculo
-    JMP repetir 
+    JMP input 
 
 
 ;SUBRUTINA DE IMPRMIR RESPUESTA

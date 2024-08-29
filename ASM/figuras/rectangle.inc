@@ -92,4 +92,4 @@ case_rectangle:
     call imprimir_resp
 
     ;se llama a repetir para preguntar si quiere calcular otra figura
-    jmp repetir
+    jmp input
