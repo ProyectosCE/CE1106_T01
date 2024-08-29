@@ -1,3 +1,11 @@
+; MIT License
+; Copyright (c) 2024 José Bernardo Barquero Bonilla,
+;                    Jose Eduardo Campos Salazar,
+;                    Jimmy Feng Feng,
+;                    Alexander Montero Vargas
+; Consulta el archivo LICENSE para más detalles.
+
+
 [bits 16]
 
 ;Seccion de datos predefinidos
@@ -6,7 +14,7 @@ section .data
     default_ms db 'Otras cosas', 0x0D, 0x0A, '$' 
 
     ;Mensaje de bienvenida
-    initial_msg db 'Bienvenido a GeometryTEC', 0x0A, '$'
+    initial_msg db 0x0A, 'Bienvenido a GeometryTEC', 0x0A, '$'
     
     ;Para pregunta se seleccion de figura
     askn_msg db 0x0A, 'Escoge una figura:', '$' 
@@ -37,7 +45,10 @@ section .data
     repno db 0x0A,'2. Salir',0x0A,'$'
 
     ;Mensaje de agradecimiento
-    salida_msg db 0x0A, 'Gracias por usar GeometryTEC:','$'  ; Mensaje de salida
+    salida_msg db 0x0A, 'Gracias por usar GeometryTEC',0x0A,'$'  ; Mensaje de salida
+
+    ;MENSAJES DE LICENCIA
+    licencia db 'This program is under MIT License, Copyright(c) 2024','$' 
 
 ;Seccion de buffer usados en todo el programa para el almacenamiento de valores y datos
 section .bss   
@@ -80,6 +91,11 @@ _start:
     jmp initial_case  
 
 initial_case:
+    ;Imprime noticia de Licencia
+
+    mov bx,licencia
+    call imp_msg
+
     ; Imprime el mensaje inicial de bienvenida
     mov bx, initial_msg
     call imp_msg
@@ -263,9 +279,9 @@ clear_loop:
 
 
 done:
-    lea dx, [salida_msg]  
-    mov ah, 09h  
-    int 21h 
+    mov bx, salida_msg
+    call imp_msg
+
     mov ah, 4Ch  ; Función de MS-DOS para terminar el programa
     int 21h  ; Interrupción de MS-DOS para salir
 

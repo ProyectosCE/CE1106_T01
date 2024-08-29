@@ -1,3 +1,10 @@
+; MIT License
+; Copyright (c) 2024 José Bernardo Barquero Bonilla,
+;                    Jose Eduardo Campos Salazar,
+;                    Jimmy Feng Feng,
+;                    Alexander Montero Vargas
+; Consulta el archivo LICENSE para más detalles.
+
 ;Seccion con constantes necesarias para el cálculo del área y perimetro del rectangulo
 section .data
     dos db 0x00, 0x02, 0x00

@@ -1,3 +1,11 @@
+; MIT License
+; Copyright (c) 2024 José Bernardo Barquero Bonilla,
+;                  Jose Eduardo Campos Salazar,
+;                  Jimmy Feng Feng,
+;                  Alexander Montero Vargas
+; Consulta el archivo LICENSE para más detalles.
+
+
 ;Seccion con constantes necesarias para el cálculo del área y perimetro del trapecio
 section .data
     ask_B db 0x0A,'Cuanto mide Base Mayor?',0x09,'', 0x0D, 0x0A, '$'  
