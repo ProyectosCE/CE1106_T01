@@ -196,9 +196,15 @@ error:
     ;Imprime un mensaje de error
     mov bx, error_dig 
     call imp_msg
+    mov al, [intselect]
+
+    cmp al, 1 
+    je repetir 
+    cmp al, 2
+    je input
 
     ;Salta a repetir para preguntar si quiere hacer otro calculo
-    JMP repetir 
+    ret 
 
 
 ;SUBRUTINA DE IMPRMIR RESPUESTA
@@ -306,15 +312,12 @@ done_imp:
 
 new_line:
     ;Método para imprimir una nueva linea de ser necesario
-    xor dx,dx
-    mov dl,10
-    mov ah, 02h
+    lea dx, newline
+    mov ah, 09h
     int 21h
     ret
 
-imp_msg:
-
-
+color_msg:
 
     ; Entradas: En BX recibe el valor de la direccion de un buffer de texto, recibe el color en CL
     ; Salidas: Imprime el buffer de texto a colores
@@ -342,6 +345,14 @@ imp_msg:
 
     ;impresión normal de la cadena
     pop bx
+    mov ah, 09h
+    lea dx,[bx]
+    int 21h
+
+    ;retorna
+    ret
+
+imp_msg:
     mov ah, 09h
     lea dx,[bx]
     int 21h

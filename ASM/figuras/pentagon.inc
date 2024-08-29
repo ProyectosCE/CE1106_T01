@@ -83,4 +83,4 @@ case_pentagon:
     call imprimir_resp
 
     ;se llama a repetir para preguntar si quiere calcular otra figura
-    jmp repetir
+    ret
