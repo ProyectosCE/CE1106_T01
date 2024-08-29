@@ -5,7 +5,7 @@
 ;                    Alexander Montero Vargas
 ; Consulta el archivo LICENSE para más detalles.
 
-section .data
+
     error_dig db 0x0A,'Favor ingrese un numero valido (0-9999.99)', 0x0D, 0x0A, '$'
 
 lectura: 
@@ -322,11 +322,5 @@ imp_msg:
     mov ah, 09h
     lea dx,[bx]
     int 21h
-
-    mov ah, 06H
-    xor bx,bx
-    mov bh,3h
-    mov dh,25
-    mov dl,1
     ;retorna
     ret
