@@ -5,6 +5,10 @@
 ;                    Alexander Montero Vargas
 ; Consulta el archivo LICENSE para más detalles.
 
+; En adelante para todo los archivos de código de este protecto, el uso de caracteres ASCII fue investigado
+; en documentación de International Business Machines (IBM)
+; url: https://www.ibm.com/docs/es/aix/7.1?topic=adapters-ascii-decimal-hexadecimal-octal-binary-conversion-table
+
 
     error_dig db 0x0A,'Favor ingrese un numero valido (0-9999.99)', 0x0D, 0x0A, '$'
 
@@ -319,6 +323,11 @@ new_line:
 
 color_msg:
 
+    ;En adelante y para todos los archivos de código de este proyecto,
+    ; todo el uso de colores fue inspirado en video del usuario de youtube gmendezm
+    ; en el video [ITCR TEC] 224- [ASM x86] Colores (gmendezm)
+    ;url: https://www.youtube.com/watch?v=ZS6dCR8LBA0
+
     ; Entradas: En BX recibe el valor de la direccion de un buffer de texto, recibe el color en CL
     ; Salidas: Imprime el buffer de texto a colores
     ; Restricciones: El buffer debe terminar con el caracter de finalización "$"
@@ -353,6 +362,10 @@ color_msg:
     ret
 
 imp_msg:
+
+    ; Entradas: En BX recibe el valor de la direccion de un buffer de texto
+    ; Salidas: Imprime el buffer de texto a colores
+    ; Restricciones: El buffer debe terminar con el caracter de finalización "$"
     mov ah, 09h
     lea dx,[bx]
     int 21h

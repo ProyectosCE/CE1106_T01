@@ -5,6 +5,10 @@
 ;                    Alexander Montero Vargas
 ; Consulta el archivo LICENSE para más detalles.
 
+; En adelante para todos los archivos de código de ese proyecto, para el conocimiento
+; y manejo de las interrupciones para Ensamblador 8086
+; se consultó Tabla de interrupciones de Galeno, G., Gomez, J.
+; url: http://ebadillo_computacion.tripod.com/ensamblador/8086_int.pdf
 
 [bits 16]
 
