@@ -316,11 +316,35 @@ imp_msg:
 
 
 
-    ; Entradas: En BX recibe el valor de la direccion de un buffer de texto
-    ; Salidas: Imprime el buffer de texto
+    ; Entradas: En BX recibe el valor de la direccion de un buffer de texto, recibe el color en CL
+    ; Salidas: Imprime el buffer de texto a colores
     ; Restricciones: El buffer debe terminar con el caracter de finalización "$"
+    
+    ;:guardamos los valores de bx y cx
+    push bx
+    push cx
+
+    ;Encontramos la posición del carro
+    mov ah, 03h
+    mov bx, 0         
+    int 10h
+    int 3 
+    
+    ;definimos el color de la linea donde se va a imprimir el texto
+    pop cx
+    mov ah,06h
+    mov bh,cl
+    mov ch,dh
+    mov cl,0
+    mov dh,ch
+    mov dl,80
+    int 10h
+
+    ;impresión normal de la cadena
+    pop bx
     mov ah, 09h
     lea dx,[bx]
     int 21h
+
     ;retorna
     ret
