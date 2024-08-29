@@ -21,8 +21,7 @@
 
 ### Objetivo General
 
-- Desarrollar una aplicación que permita reafirmar el conocimiento del lenguaje Ensamblador
-8086.
+- Desarrollar una aplicación que permita reafirmar el conocimiento del lenguaje Ensamblador 8086.
 
 #### Objetivos Específicos
 
