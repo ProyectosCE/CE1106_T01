@@ -313,11 +313,20 @@ new_line:
     ret
 
 imp_msg:
+
+
+
     ; Entradas: En BX recibe el valor de la direccion de un buffer de texto
     ; Salidas: Imprime el buffer de texto
     ; Restricciones: El buffer debe terminar con el caracter de finalización "$"
     mov ah, 09h
     lea dx,[bx]
     int 21h
+
+    mov ah, 06H
+    xor bx,bx
+    mov bh,3h
+    mov dh,25
+    mov dl,1
     ;retorna
     ret
